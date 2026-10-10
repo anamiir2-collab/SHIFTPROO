@@ -1,9 +1,14 @@
 /* ShiftPro - Utilities
-   Pure helpers — no dependencies on other modules.
+   Pure helpers — depends only on SPi18n (loaded earlier).
    Exposes: window.SPUtils
 */
 (function (global) {
   'use strict';
+
+  // اختصار لدالة الترجمة (لو الـ i18n محمّل)
+  function t(key, vars) {
+    return global.SPi18n ? SPi18n.t(key, vars) : key;
+  }
 
   // ---------- DOM ----------
   const $ = (sel, root) => (root || document).querySelector(sel);
@@ -70,6 +75,8 @@
     return new Date(d.getFullYear(), d.getMonth(), d.getDate());
   }
 
+  // أسماء الشهور والأيام — بتُرجع حسب اللغة الحالية
+  // (محفوظة للأسماء الثابتة للوصول السريع)
   const monthNamesAr = [
     'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
     'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
@@ -83,9 +90,26 @@
   ];
   const weekdayShortAr = ['أحد', 'إثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة', 'سبت'];
 
-  // ---------- Hijri date ----------
-  let _hijriFmt = null;
+  // وكلاء حسب اللغة الحالية (للتوافق مع الاستخدام القديم monthNamesAr[i])
+  // بتحوّل الوصول من monthNamesAr[i] إلى استدعاء دالة
+  function monthNames(i) {
+    return global.SPi18n ? SPi18n.getMonthName(i) : monthNamesAr[i];
+  }
+  function monthShort(i) {
+    return global.SPi18n ? SPi18n.getMonthShort(i) : monthShortAr[i];
+  }
+  function weekdayNames(i) {
+    return global.SPi18n ? SPi18n.getWeekdayName(i) : weekdayNamesAr[i];
+  }
+  function weekdayShort(i) {
+    return global.SPi18n ? SPi18n.getWeekdayShort(i) : weekdayShortAr[i];
+  }
+
+  // ---------- Hijri date (بيدعم اللغة الحالية) ----------
   function formatHijri(date) {
+    if (global.SPi18n) return SPi18n.formatHijri(date);
+    // fallback لو i18n مش محمّل
+    let _hijriFmt = null;
     try {
       if (!_hijriFmt) {
         try {
@@ -98,7 +122,9 @@
           });
         }
       }
-      return _hijriFmt.format(date) + ' هـ';
+      const out = _hijriFmt.format(date);
+      // Intl بيرجّع "هـ" أصلًا — نتجنب تكرار اللاحقة
+      return out.indexOf('هـ') >= 0 ? out : out + ' هـ';
     } catch (e) {
       return '';
     }
@@ -140,6 +166,7 @@
     return Math.round((min / 60) * 100) / 100;
   }
   function fmtTime12(hhmm) {
+    if (global.SPi18n) return SPi18n.fmtTime12(hhmm);
     if (!hhmm) return '';
     const m = timeToMin(hhmm);
     if (m == null) return '';
@@ -162,8 +189,9 @@
     } catch (e) { return ''; }
   }
 
-  // ---------- Number / currency formatting ----------
+  // ---------- Number / currency formatting (حسب اللغة) ----------
   function fmtNum(n, decimals) {
+    if (global.SPi18n) return SPi18n.formatNumber(n, decimals);
     if (decimals == null) decimals = 0;
     if (isNaN(n)) n = 0;
     return Number(n).toLocaleString('en-US', {
@@ -172,10 +200,29 @@
     });
   }
   function fmtCurrency(n) {
+    if (global.SPi18n) return SPi18n.formatCurrency(n);
     return fmtNum(Math.round(n)) + ' ج';
   }
   function fmtHours(n) {
-    return fmtNum(n, n % 1 === 0 ? 0 : 2) + ' س';
+    // وحدة الساعات حسب اللغة
+    const unit = (global.SPi18n && SPi18n.getLocale() === 'ar') ? ' س' : ' h';
+    return fmtNum(n, n % 1 === 0 ? 0 : 2) + unit;
+  }
+
+  // ---------- اسم الوردية المعروض (يترجم أسماء الورديات المدمجة) ----------
+  // الورديات المدمجة (نهار/ليل/إجازة دورية/مطبق) تُعرض بالإنجليزية
+  // في الوضع الإنجليزي عبر nameEn — الورديات المخصصة تبقى كما كتبها المستخدم.
+  function shiftDisplayName(shift) {
+    if (!shift) return '';
+    if (
+      global.SPi18n &&
+      SPi18n.getLocale() === 'en' &&
+      shift.isBuiltIn &&
+      shift.nameEn
+    ) {
+      return shift.nameEn;
+    }
+    return shift.name || '';
   }
 
   // ---------- Misc ----------
@@ -216,17 +263,17 @@
     }, 2400);
   }
 
-  // ---------- Confirm dialog (promise-based) ----------
+  // ---------- Confirm dialog (promise-based, بيدعم اللغة) ----------
   function confirmDialog(message, opts) {
     opts = opts || {};
     return new Promise((resolve) => {
       const overlay = el('div', { class: 'sp-confirm-overlay show' });
       const box = el('div', { class: 'sp-confirm-box' });
-      const title = el('div', { class: 'sp-confirm-title' }, [opts.title || 'تأكيد']);
+      const title = el('div', { class: 'sp-confirm-title' }, [opts.title || t('msg.confirm_delete')]);
       const msg = el('div', { class: 'sp-confirm-msg' }, [message]);
       const btns = el('div', { class: 'sp-confirm-btns' });
-      const cancelBtn = el('button', { class: 'sp-btn sp-btn-ghost' }, [opts.cancelText || 'إلغاء']);
-      const okBtn = el('button', { class: 'sp-btn ' + (opts.danger ? 'sp-btn-danger' : 'sp-btn-primary') }, [opts.okText || 'تأكيد']);
+      const cancelBtn = el('button', { class: 'sp-btn sp-btn-ghost' }, [opts.cancelText || t('common.cancel')]);
+      const okBtn = el('button', { class: 'sp-btn ' + (opts.danger ? 'sp-btn-danger' : 'sp-btn-primary') }, [opts.okText || t('common.confirm')]);
       btns.appendChild(cancelBtn);
       btns.appendChild(okBtn);
       box.appendChild(title);
@@ -287,13 +334,17 @@
   global.SPUtils = {
     $, $$, el,
     fmtDate, parseDate, todayStr, sameDay, dayDiff, addDays, startOfDay,
+    // الأسماء الثابتة (للتوافق للخلف) + وكلاء حسب اللغة
     monthNamesAr, monthShortAr, weekdayNamesAr, weekdayShortAr,
+    monthNames, monthShort, weekdayNames, weekdayShort,
     formatHijri,
     timeToMin, minToTime, timeDiffMin, computeRangeHours, fmtTime12, nowHHMM, fmtDateTime,
-    fmtNum, fmtCurrency, fmtHours,
+    fmtNum, fmtCurrency, fmtHours, shiftDisplayName,
     debounce, uuid, deepClone,
     toast, confirmDialog,
     haptic, onClickOnce,
-    downloadBlob
+    downloadBlob,
+    // وصول مباشر لدالة الترجمة
+    t
   };
 })(window);

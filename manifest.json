@@ -8,8 +8,8 @@
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#071426",
-  "theme_color": "#2563eb",
+  "background_color": "#16203A",
+  "theme_color": "#1E2A44",
   "categories": ["productivity", "business", "utilities"],
   "icons": [
     {

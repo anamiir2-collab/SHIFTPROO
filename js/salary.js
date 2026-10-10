@@ -34,6 +34,32 @@
 
   const storage = SPStorage;
 
+  // دالة ترجمة محلية
+  function t(key, vars) {
+    return global.SPi18n ? global.SPi18n.t(key, vars) : key;
+  }
+
+  // راتب بدقة منزلتين عشريتين بدل تقريب كل بند إلى جنيه كامل.
+  function fmtSalaryCurrency(amount) {
+    const locale = global.SPi18n && global.SPi18n.getLocale() === 'en'
+      ? 'en-US'
+      : 'ar-EG';
+    try {
+      return new Intl.NumberFormat(locale, {
+        style: 'currency',
+        currency: 'EGP',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }).format(Number(amount) || 0);
+    } catch (e) {
+      return fmtNum(Number(amount) || 0, 2) + ' ' + (locale === 'en-US' ? 'EGP' : 'ج.م');
+    }
+  }
+
+  function monthName(i) {
+    return global.SPi18n ? global.SPi18n.getMonthName(i) : monthNamesAr[i];
+  }
+
   // =========================================================
   // Pay period
   // =========================================================
@@ -221,7 +247,8 @@
       A: 0,
       X: 0,
       L: 0,
-      B: 0
+      B: 0,
+      H: 0   // أيام إجازة رسمية (افتراضية عند تفعيل holidaysAsLeave)
     };
 
     let baseHours = 0;
@@ -229,6 +256,9 @@
 
     // Additional official holiday hours
     let officialHolidayHours = 0;
+
+    // ساعات الإجازة الرسمية المدفوعة (عند تفعيل الخيارين معًا)
+    let holidayPaidHours = 0;
 
     let lateTotal = 0;
     let earlyTotal = 0;
@@ -254,12 +284,70 @@
           : null;
 
       const officialHoliday =
+        s.showHolidays !== false &&
         isOfficialHoliday(d);
 
       const officialHolidayName =
         officialHoliday
           ? getOfficialHolidayName(d)
           : '';
+
+      /*
+        خيار "اعتبار الإجازات الرسمية إجازة تلقائيًا":
+        - يوم إجازة رسمية بدون أي سجل → يُعد يوم إجازة (H)
+          ولا يُعد غيابًا ولا حضورًا.
+        - إذا كان "الإجازات الرسمية مدفوعة" مفعّلًا
+          يُضاف أجر يوم عادي (ساعات الوردية × سعر الساعة).
+        - بدون تفعيل الخيارين: اليوم يبقى كما كان تمامًا
+          (بدون سجلات = بدون قيمة) — السلوك الأصلي محفوظ.
+      */
+      if (
+        !entry &&
+        officialHoliday &&
+        s.holidaysAsLeave
+      ) {
+        counts.H++;
+
+        if (s.holidaysPaid) {
+          const sh =
+            Number(s.shiftHours) || 12;
+
+          baseHours += sh;
+
+          holidayPaidHours += sh;
+        }
+
+        dailyDetails.push({
+          date: new Date(d),
+
+          entry: null,
+
+          actual: s.holidaysPaid ? (Number(s.shiftHours) || 12) : 0,
+
+          ot: 0,
+
+          late: 0,
+
+          early: 0,
+
+          value: s.holidaysPaid
+            ? Math.round(
+                (Number(s.shiftHours) || 12) * baseRate
+              )
+            : 0,
+
+          officialHoliday,
+
+          officialHolidayName,
+
+          isAutoHoliday: true,
+
+          officialHolidayHours: 0
+        });
+
+        d = addDays(d, 1);
+        continue;
+      }
 
       let actual = 0;
       let ot = 0;
@@ -468,6 +556,8 @@
 
         officialHolidayName,
 
+        isAutoHoliday: false,
+
         officialHolidayHours:
           officialHoliday &&
           actual > 0
@@ -642,6 +732,11 @@
           officialHolidayHours * 100
         ) / 100,
 
+      holidayPaidHours:
+        Math.round(
+          holidayPaidHours * 100
+        ) / 100,
+
       totalHours:
         Math.round(
           totalHours * 100
@@ -665,58 +760,19 @@
 
       officialHolidayMultiplier,
 
-      baseSalary:
-        Math.round(
-          baseSalary
-        ),
-
-      overtimeValue:
-        Math.round(
-          overtimeValue
-        ),
-
-      officialHolidayValue:
-        Math.round(
-          officialHolidayValue
-        ),
-
+      // Keep full precision in the calculation; round only for display.
+      baseSalary,
+      overtimeValue,
+      officialHolidayValue,
       bonus,
       allowance,
-
-      deduction:
-        Math.round(
-          deduction
-        ),
-
-      advance:
-        Math.round(
-          advance
-        ),
-
-      absenceDeduction:
-        Math.round(
-          absenceDeduction
-        ),
-
-      lateDeduction:
-        Math.round(
-          lateDeduction
-        ),
-
-      grossSalary:
-        Math.round(
-          grossSalary
-        ),
-
-      totalDeductions:
-        Math.round(
-          totalDeductions
-        ),
-
-      netSalary:
-        Math.round(
-          netSalary
-        ),
+      deduction,
+      advance,
+      absenceDeduction,
+      lateDeduction,
+      grossSalary,
+      totalDeductions,
+      netSalary,
 
       adjustments,
 
@@ -743,21 +799,26 @@
 
     $('#periodLabel').textContent =
       `${start.getDate()} ` +
-      `${monthNamesAr[start.getMonth()]} — ` +
+      `${monthName(start.getMonth())} — ` +
       `${end.getDate()} ` +
-      `${monthNamesAr[end.getMonth()]} ` +
+      `${monthName(end.getMonth())} ` +
       `${end.getFullYear()}`;
 
     const s =
       storage.getSettings();
 
-    $('#cycleStartLbl').textContent =
-      s.cycleDay;
+    // صف "أيام إجازة رسمية" يظهر فقط عند تفعيل الاعتبار التلقائي
+    const holidayRow = document.getElementById('pHolidayRow');
+    if (holidayRow) {
+      holidayRow.hidden = !(s.holidaysAsLeave && s.showHolidays !== false);
+    }
 
-    $('#cycleEndLbl').textContent =
-      s.cycleDay - 1 <= 0
-        ? 28
-        : s.cycleDay - 1;
+    // تلميح دورة الصرف — نص مترجم مع أرقام الدورة الفعلية
+    const cycleHint = document.getElementById('cycleHint');
+    const cycleEndDay = s.cycleDay - 1 <= 0 ? 28 : s.cycleDay - 1;
+    if (cycleHint) {
+      cycleHint.textContent = t('salarypage.period_hint', { start: s.cycleDay, end: cycleEndDay });
+    }
 
     const result =
       computeSalary(
@@ -777,6 +838,9 @@
 
     $('#pB').textContent =
       result.counts.B;
+
+    $('#pHoliday').textContent =
+      result.counts.H || 0;
 
     // Hours
     $('#pBaseHours').textContent =
@@ -799,51 +863,52 @@
       fmtNum(
         result.baseRate,
         2
-      ) + ' ج/س';
+      ) + ' ' + t('salarypage.currency_per_hour');
 
     $('#pOvertimeRate').textContent =
       fmtNum(
         result.overtimeRate,
         2
-      ) + ' ج/س';
+      ) + ' ' + t('salarypage.currency_per_hour');
 
-    // Salary
-    $('#pBaseSalary').textContent =
-      fmtCurrency(
-        result.baseSalary
-      );
+    // Detailed salary breakdown: display all components separately.
+    $('#pBaseSalary').textContent = fmtSalaryCurrency(result.baseSalary);
+    $('#pBaseFormula').textContent = t('salarypage.formula_base', {
+      hours: fmtNum(result.baseHours, 2),
+      rate: fmtNum(result.baseRate, 2)
+    });
 
-    $('#pOvertimeValue').textContent =
-      fmtCurrency(
-        result.overtimeValue
-      );
+    $('#pOvertimeValue').textContent = fmtSalaryCurrency(result.overtimeValue);
+    $('#pOvertimeFormula').textContent = t('salarypage.formula_overtime', {
+      hours: fmtNum(result.overtimeHours, 2),
+      rate: fmtNum(result.overtimeRate, 2)
+    });
 
-    $('#pBonus').textContent =
-      fmtCurrency(
-        result.bonus
-      );
+    const officialHolidayValueRow = document.getElementById('pOfficialHolidayValueRow');
+    const holidayFormulaRow = document.getElementById('pOfficialHolidayFormulaRow');
+    const showHolidayPay = result.officialHolidayValue > 0;
+    if (officialHolidayValueRow) officialHolidayValueRow.hidden = !showHolidayPay;
+    if (holidayFormulaRow) holidayFormulaRow.hidden = !showHolidayPay;
+    const holidayFormula = document.getElementById('pOfficialHolidayFormula');
+    if (holidayFormula) {
+      holidayFormula.textContent = t('salarypage.formula_holiday', {
+        hours: fmtNum(result.officialHolidayHours, 2),
+        multiplier: fmtNum(result.officialHolidayMultiplier, 2),
+        rate: fmtNum(result.overtimeRate, 2)
+      });
+    }
+    const holidayValue = document.getElementById('pOfficialHolidayValue');
+    if (holidayValue) holidayValue.textContent = fmtSalaryCurrency(result.officialHolidayValue);
 
-    $('#pAllowance').textContent =
-      fmtCurrency(
-        result.allowance
-      );
-
-    $('#pDeduction').textContent =
-      fmtCurrency(
-        result.deduction +
-        result.absenceDeduction +
-        result.lateDeduction
-      );
-
-    $('#pAdvance').textContent =
-      fmtCurrency(
-        result.advance
-      );
-
-    $('#pTotal').textContent =
-      fmtCurrency(
-        result.netSalary
-      );
+    $('#pBonus').textContent = fmtSalaryCurrency(result.bonus);
+    $('#pAllowance').textContent = fmtSalaryCurrency(result.allowance);
+    $('#pGrossSalary').textContent = fmtSalaryCurrency(result.grossSalary);
+    $('#pDeduction').textContent = fmtSalaryCurrency(result.deduction);
+    $('#pAbsenceDeduction').textContent = fmtSalaryCurrency(result.absenceDeduction);
+    $('#pLateDeduction').textContent = fmtSalaryCurrency(result.lateDeduction);
+    $('#pTotalDeductions').textContent = fmtSalaryCurrency(result.totalDeductions);
+    $('#pAdvance').textContent = fmtSalaryCurrency(result.advance);
+    $('#pTotal').textContent = fmtSalaryCurrency(result.netSalary);
 
     renderAdjustments(
       result.adjustments
@@ -878,7 +943,7 @@
             class:
               'fs-sm muted'
           }, [
-            'لا توجد بنود إضافية في هذه الفترة'
+            t('salarypage.empty_adj')
           ])
         ])
       );
@@ -924,12 +989,12 @@
             't1 fs-sm'
         }, [
           a.type === 'bonus'
-            ? 'مكافأة'
+            ? t('adj.type_bonus')
             : a.type === 'allowance'
-              ? 'بدل'
+              ? t('adj.type_allowance')
               : a.type === 'deduction'
-                ? 'خصم'
-                : 'سلفة'
+                ? t('adj.type_deduction')
+                : t('adj.type_advance')
         ])
       );
 
@@ -952,7 +1017,7 @@
         }, [
           sign +
           ' ' +
-          fmtCurrency(
+          fmtSalaryCurrency(
             a.amount
           )
         ])
@@ -967,7 +1032,7 @@
             'height:32px;' +
             'font-size:14px;',
           'aria-label':
-            'حذف'
+            t('common.delete')
         }, [
           '×'
         ]);
@@ -978,10 +1043,10 @@
 
           const ok =
             await SPUtils.confirmDialog(
-              'حذف هذا البند؟',
+              t('adj.delete_confirm'),
               {
                 okText:
-                  'حذف',
+                  t('common.delete'),
                 danger:
                   true
               }
@@ -994,7 +1059,7 @@
           );
 
           SPUtils.toast(
-            'تم الحذف',
+            t('msg.deleted'),
             'success'
           );
 
@@ -1027,7 +1092,7 @@
       $('#adjSheet');
 
     $('#adjTitle').textContent =
-      'إضافة بند';
+      t('adj.sheet_title');
 
     $('#adjType').value =
       'bonus';
@@ -1083,7 +1148,7 @@
     if (amount <= 0) {
 
       toast(
-        'أدخل مبلغًا صحيحًا',
+        t('adj.enter_amount'),
         'warning'
       );
 
@@ -1093,7 +1158,7 @@
     if (!date) {
 
       toast(
-        'حدد التاريخ',
+        t('adj.enter_date'),
         'warning'
       );
 
@@ -1110,7 +1175,7 @@
     closeAdjustmentSheet();
 
     toast(
-      'تم حفظ البند',
+      t('adj.saved'),
       'success'
     );
 

@@ -1,0 +1,20 @@
+{
+  "name": "shiftpro",
+  "version": "2.5.0",
+  "description": "ShiftPro - إدارة الورديات والحضور والرواتب (PWA)",
+  "private": true,
+  "scripts": {
+    "test": "jest tests/",
+    "test:watch": "jest --watch tests/",
+    "test:coverage": "jest tests/ --coverage"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "jsdom": "^22.1.0"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "testMatch": ["**/tests/**/*.test.js"]
+  }
+}

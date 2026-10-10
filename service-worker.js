@@ -1,23 +1,67 @@
-/* ShiftPro Service Worker - v2.0
+/* ShiftPro Service Worker - v2.5.0
    Strategy:
-   - precache: app shell (HTML, CSS, JS, icons, manifest)
+   - precache: app shell (HTML, CSS, JS, locales, icons, manifest)
    - runtime: network-first for navigations, cache-first for static assets
    - cleanup: drop old caches on activate
 */
-const SW_VERSION = 'shifpro-v2.0.1';
+const SW_VERSION = 'shifpro-v2.5.4-law';
 const APP_SHELL = [
   './',
   './index.html',
   './manifest.json',
   './css/style.css',
+  './css/animations.css',
+  './css/ios-style.css',
+  './css/law-reader.css',
+  // ملفات i18n (مهمة للتشغيل الأول)
+  './locales/ar.js',
+  './locales/en.js',
+  './locales/index.js',
+  // موديولات التطبيق
   './js/utils.js',
   './js/storage.js',
+  './js/clock.js',
+  './js/official-holidays.js',
+  './js/leaves.js',
+  './js/shift-templates.js',
+  './js/undo-redo.js',
+  './js/smart-notifications.js',
+  './js/pdf-export.js',
+  './js/charts.js',
+  './js/backup.js',
+  './js/app-lock.js',
+  './js/storage-hybrid.js',
+  './js/ux-enhancements.js',
+  './js/ical-export.js',
   './js/calendar.js',
   './js/attendance.js',
   './js/salary.js',
   './js/reports.js',
   './js/settings.js',
+  './js/welcome-messages.js',
   './js/app.js',
+  // ====== Egyptian Labor Law dataset + reader ======
+  // Dataset: order matters only at runtime (script tags in index.html);
+  // for caching the order is irrelevant.
+  './js/law-reader.js',
+  './js/data/law-data.js',
+  './js/data/book-1-chapter-1.js',
+  './js/data/book-1-chapter-2.js',
+  './js/data/book-2-chapter-1.js',
+  './js/data/book-2-chapter-2.js',
+  './js/data/book-2-chapter-3.js',
+  './js/data/book-3-chapter-1.js',
+  './js/data/book-3-chapter-2.js',
+  './js/data/book-3-chapter-3.js',
+  './js/data/book-4-articles.js',
+  './js/data/book-4-chapter-1.js',
+  './js/data/book-4-chapter-2.js',
+  './js/data/book-4-chapter-3.js',
+  './js/data/book-4-chapter-4.js',
+  './js/data/book-4-chapter-5.js',
+  './js/data/book-5-chapter-1.js',
+  './js/data/book-5-chapter-2.js',
+  // أيقونات PWA
   './icon-192.png',
   './icon-512.png',
   './apple-touch-icon.png',
@@ -72,14 +116,14 @@ self.addEventListener('fetch', (event) => {
           caches.open(SW_VERSION).then((c) => c.put('./index.html', copy)).catch(()=>{});
           return res;
         })
-        .catch(() => caches.match('./index.html'))
+        .catch(() => caches.match(req).then((cached) => cached || caches.match('./index.html')))
     );
     return;
   }
 
   // Static assets -> cache first, then network
   event.respondWith(
-    caches.match(req).then((cached) => {
+    caches.match(req, { ignoreSearch: true }).then((cached) => {
       if (cached) return cached;
       return fetch(req)
         .then((res) => {

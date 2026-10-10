@@ -1,0 +1,137 @@
+/* ShiftPro — iOS-inspired visual system
+   Now unified with the Premium Navy palette (sp-* tokens).
+   The iOS layer provides layout, spacing, and component primitives
+   while inheriting colors from the centralized palette in style.css.
+*/
+:root{
+  /* Inherit colors from the premium palette rather than redefining them
+     here. This keeps both themes consistent and centrally maintained. */
+  --ios-blue: var(--sp-blue, #547AA5);
+  --ios-green: var(--sp-success, #278568);
+  --ios-red: var(--sp-danger, #C84C4C);
+  --ios-orange: var(--sp-warning, #C58A32);
+  --ios-bg: var(--sp-bg, #F5F7FA);
+  --ios-card: var(--sp-card, #FFFFFF);
+  --ios-secondary: var(--sp-muted, #6B778A);
+  --ios-separator: var(--sp-border, #E3E8EF);
+  --ios-radius: 20px;
+  --ios-shadow: 0 4px 14px rgba(30,42,68,.06), 0 1px 3px rgba(30,42,68,.04);
+  /* Arabic-first typography — Cairo with reliable fallbacks */
+  --ios-font: 'Cairo', 'IBM Plex Sans Arabic', -apple-system, BlinkMacSystemFont,
+              'SF Pro Display', 'Segoe UI', 'Noto Sans Arabic', Tahoma, Arial, sans-serif;
+}
+html,body{font-family:var(--ios-font)!important;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+body{background:var(--ios-bg)!important;}
+body,.page,.sheet,.card,.topbar,.tabbar,input,select,textarea,button{letter-spacing:-.005em;}
+.page{max-width:680px!important;margin:0 auto!important;padding:18px 16px 120px!important;}
+.topbar{position:sticky!important;top:0;z-index:40;background:color-mix(in srgb, var(--ios-bg) 90%, transparent)!important;backdrop-filter:saturate(180%) blur(20px)!important;-webkit-backdrop-filter:saturate(180%) blur(20px)!important;border-bottom:1px solid var(--ios-separator)!important;box-shadow:none!important;}
+.topbar .app-name{font-weight:800!important;letter-spacing:-.04em;}
+.icon-btn{width:42px!important;height:42px!important;border-radius:50%!important;background:color-mix(in srgb, var(--ios-secondary) 10%, transparent)!important;border:0!important;box-shadow:none!important;}
+.icon-btn:active,.btn:active,.tab-btn:active,.item:active{transform:scale(.97);}
+.card,.hero-card,.stat-card,.report-export-card,.report-disclosure,.about-explain-card{border-radius:var(--ios-radius)!important;border:1px solid var(--ios-separator)!important;box-shadow:var(--ios-shadow)!important;}
+.card{background:var(--ios-card)!important;padding:18px!important;margin-bottom:14px!important;}
+.hero-card{background:linear-gradient(145deg,var(--ios-card),color-mix(in srgb, var(--ios-blue) 8%, var(--ios-card)))!important;padding:22px!important;}
+.stat-grid{gap:12px!important;}
+.stat-card{min-height:112px!important;background:var(--ios-card)!important;}
+.field input,.field select,.field textarea,input,select,textarea{border-radius:14px!important;min-height:46px;border:1px solid var(--ios-separator)!important;background:color-mix(in srgb, var(--ios-secondary) 6%, transparent)!important;box-shadow:none!important;}
+.field textarea{padding-top:12px!important;}
+.btn{border-radius:13px!important;min-height:44px!important;font-weight:700!important;box-shadow:none!important;}
+.btn.primary{background:linear-gradient(135deg, var(--ios-blue), var(--sp-navy, #1E2A44))!important;border-color:transparent!important;}
+.btn.success{background:linear-gradient(135deg, #3CA67F, var(--ios-green))!important;border-color:transparent!important;}
+.btn.danger{background:linear-gradient(135deg, #E07070, var(--ios-red))!important;border-color:transparent!important;}
+.tabbar{position:fixed!important;left:10px!important;right:10px!important;bottom:10px!important;width:auto!important;max-width:680px;margin:auto!important;height:72px!important;padding:7px!important;border-radius:24px!important;background:color-mix(in srgb, var(--ios-card) 91%, transparent)!important;backdrop-filter:saturate(180%) blur(24px)!important;-webkit-backdrop-filter:saturate(180%) blur(24px)!important;border:1px solid var(--ios-separator)!important;box-shadow:0 -8px 24px rgba(30,42,68,.06)!important;}
+.tab-btn{border-radius:17px!important;color:var(--ios-secondary)!important;font-weight:600!important;}
+.tab-btn.active{background:color-mix(in srgb, var(--sp-navy, #1E2A44) 11%, transparent)!important;color:var(--sp-navy, #1E2A44)!important;}
+.tab-btn .ic svg,.icon-btn svg,.btn svg,.ico svg,.ico-box svg{stroke-width:1.8!important;}
+.sheet-overlay{background:rgba(30,42,68,.45)!important;backdrop-filter:blur(3px);}
+.sheet{border-radius:26px 26px 0 0!important;background:var(--ios-card)!important;box-shadow:0 -12px 40px rgba(30,42,68,.18)!important;padding:22px 18px max(22px,env(safe-area-inset-bottom))!important;}
+.ios-sheet{max-height:88vh;overflow:auto;}
+.ios-sheet-grabber{width:38px;height:5px;border-radius:99px;background:var(--ios-separator);margin:-10px auto 18px;}
+.sheet-header-ios h3{margin:0 0 4px!important;font-size:23px!important;letter-spacing:-.03em;}
+.ios-settings-list{background:var(--ios-bg);border-radius:17px;overflow:hidden;border:1px solid var(--ios-separator);}
+.ios-setting-row{width:100%;min-height:66px;padding:10px 14px;display:flex;align-items:center;gap:12px;background:var(--ios-card);border:0;border-bottom:1px solid var(--ios-separator);text-align:right;color:inherit;font:inherit;}
+.ios-setting-row:last-child{border-bottom:0;}
+.ios-setting-row:active{background:color-mix(in srgb, var(--ios-secondary) 8%, transparent);}
+.ios-row-icon,.ios-icon-box{width:36px;height:36px;min-width:36px;border-radius:10px;display:grid;place-items:center;background:color-mix(in srgb, var(--sp-navy, #1E2A44) 11%, transparent);color:var(--sp-navy, #1E2A44);}
+.ios-row-icon svg,.ios-icon-box svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.ios-row-text{min-width:0;flex:1;display:flex;flex-direction:column;gap:2px;}
+.ios-row-text strong{font-size:15px;}
+.ios-row-text small,.ios-row-value{font-size:12px;color:var(--ios-secondary);}
+.ios-row-value{padding-inline-start:8px;}
+.static-row{cursor:default;}
+.ios-field{padding:12px 14px;background:var(--ios-card);margin:0!important;}
+.ios-field+.ios-field{border-top:1px solid var(--ios-separator);}
+.notification-permission-card{display:flex;align-items:center;gap:12px;padding:15px;margin:0 0 14px;background:color-mix(in srgb, var(--ios-blue) 7%, transparent);border:1px solid color-mix(in srgb, var(--ios-blue) 14%, transparent);border-radius:17px;}
+.notification-permission-card>div{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;}
+.notification-permission-card small{color:var(--ios-secondary);line-height:1.5;}
+.report-disclosures{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;}
+.report-disclosure{overflow:hidden;background:var(--ios-card);}
+.report-disclosure-trigger{width:100%;min-height:76px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px;background:transparent;border:0;color:inherit;font:inherit;text-align:right;}
+.report-disclosure-trigger:active{background:color-mix(in srgb, var(--ios-secondary) 6%, transparent);}
+.report-disclosure-leading{display:flex;align-items:center;gap:12px;min-width:0;}
+.report-disclosure-leading>span:last-child{display:flex;flex-direction:column;gap:3px;}
+.report-disclosure-leading strong{font-size:16px;}
+.report-disclosure-leading small{font-size:12px;color:var(--ios-secondary);}
+.report-chevron{width:19px;height:19px;fill:none;stroke:var(--ios-secondary);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .22s ease;}
+.report-disclosure.open .report-chevron{transform:rotate(180deg);}
+.report-disclosure-content{padding:0 14px 16px;border-top:1px solid var(--ios-separator);animation:iosReveal .22s ease;}
+.report-disclosure-content[hidden]{display:none;}
+.report-export-card{padding:15px;background:var(--ios-card);display:flex;flex-direction:column;gap:14px;margin-bottom:16px;}
+.report-export-copy{display:flex;align-items:center;gap:12px;}
+.report-export-copy>div{display:flex;flex-direction:column;gap:3px;}
+.report-export-copy strong{font-size:16px;}
+.report-export-copy small{color:var(--ios-secondary);font-size:12px;}
+.report-export-row{display:flex;gap:9px;}
+.report-export-row select{flex:1;margin:0!important;}
+.report-export-row .btn{min-width:105px;}
+.about-explain-card{background:color-mix(in srgb, var(--ios-blue) 5%, transparent)!important;padding:16px!important;margin:14px 0!important;}
+.about-explain-card strong{display:block;margin-bottom:6px;font-size:16px;}
+.about-explain-card p{margin:0;color:var(--ios-secondary);line-height:1.75;font-size:14px;}
+#page-more .credit{display:none!important;}
+@keyframes iosReveal{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+@media (max-width:680px){
+  .page{padding-inline:13px!important}
+  .topbar{padding-inline:14px!important}
+  .tabbar{bottom:max(10px,env(safe-area-inset-bottom));}
+  .report-export-row{align-items:stretch}
+  .report-export-row .btn{min-width:96px;}
+}
+/* Dark mode: inherit colors from the premium dark palette in style.css.
+   We re-map the iOS tokens to point at the dark sp-* tokens, which are
+   already centralized and tested for accessible contrast. */
+@media (prefers-color-scheme:dark){
+ html[data-theme="auto"]{
+  --ios-blue: #A9C7E8;
+  --ios-green: var(--sp-success, #4FAA89);
+  --ios-red: var(--sp-danger, #E07070);
+  --ios-orange: var(--sp-warning, #E0A855);
+  --ios-bg: var(--sp-bg, #0F1626);
+  --ios-card: var(--sp-card, #18223A);
+  --ios-secondary: var(--sp-muted, #8B95A8);
+  --ios-separator: var(--sp-border, #2B3852);
+  --ios-shadow: 0 12px 30px rgba(0,0,0,.28), 0 2px 6px rgba(0,0,0,.18);
+ }
+ html[data-theme="dark"]{
+  --ios-blue: #A9C7E8;
+  --ios-green: var(--sp-success, #4FAA89);
+  --ios-red: var(--sp-danger, #E07070);
+  --ios-orange: var(--sp-warning, #E0A855);
+  --ios-bg: var(--sp-bg, #0F1626);
+  --ios-card: var(--sp-card, #18223A);
+  --ios-secondary: var(--sp-muted, #8B95A8);
+  --ios-separator: var(--sp-border, #2B3852);
+  --ios-shadow: 0 12px 30px rgba(0,0,0,.28), 0 2px 6px rgba(0,0,0,.18);
+ }
+}
+html[data-theme="dark"] body,html[data-theme="dark"] .page{background:var(--ios-bg)!important;}
+html[data-theme="dark"] .topbar{background:color-mix(in srgb, var(--ios-bg) 92%, transparent)!important;}
+html[data-theme="dark"] .tabbar{background:color-mix(in srgb, var(--ios-card) 94%, transparent)!important;}
+html[data-theme="dark"] .hero-card,html[data-theme="dark"] .card,html[data-theme="dark"] .stat-card,html[data-theme="dark"] .report-disclosure,html[data-theme="dark"] .report-export-card,html[data-theme="dark"] .about-explain-card{background:var(--ios-card)!important;border-color:var(--ios-separator)!important;}
+html[data-theme="dark"] .hero-card{background:linear-gradient(145deg,var(--ios-card),color-mix(in srgb, var(--ios-blue) 10%, var(--ios-card)))!important;}
+html[data-theme="dark"] .ios-settings-list{background:var(--ios-bg);}
+html[data-theme="dark"] .ios-setting-row,html[data-theme="dark"] .ios-field{background:var(--ios-card);}
+html[data-theme="dark"] .field input,html[data-theme="dark"] .field select,html[data-theme="dark"] .field textarea,html[data-theme="dark"] input,html[data-theme="dark"] select,html[data-theme="dark"] textarea{background:color-mix(in srgb, var(--ios-secondary) 6%, transparent)!important;border-color:var(--ios-separator)!important;}
+html[data-theme="dark"] .ios-row-icon,html[data-theme="dark"] .ios-icon-box{background:color-mix(in srgb, var(--ios-blue) 14%, transparent);color:var(--ios-blue);}
+html[data-theme="dark"] .notification-permission-card{background:color-mix(in srgb, var(--ios-blue) 9%, transparent);border-color:color-mix(in srgb, var(--ios-blue) 18%, transparent);}
+html[data-theme="dark"] .about-explain-card{background:color-mix(in srgb, var(--ios-blue) 7%, transparent)!important;}
+html[data-theme="dark"] .tab-btn.active{background:color-mix(in srgb, var(--ios-blue) 15%, transparent)!important;color:var(--ios-blue)!important;}

@@ -30,12 +30,49 @@
   let activeDate = null;
   let originalEntry = null;
 
+  // ملاحظة: statusLabels الأصلي بقي للتوافق مع الكود القديم،
+  // لكن العرض يجب أن يستخدم statusLabel() المترجمة حسب اللغة الحالية.
   const statusLabels = {
     A: 'حضرت',
     X: 'مطبق (24 ساعة)',
     L: 'إجازة',
     B: 'غياب'
   };
+
+  function t(key, vars) {
+    return global.SPi18n ? global.SPi18n.t(key, vars) : key;
+  }
+
+  // اسم الحالة حسب اللغة الحالية
+  function statusLabel(code) {
+    switch (code) {
+      case 'A': return t('dashboard.status_present');
+      case 'X': return t('attendance.double_24');
+      case 'L': return t('dashboard.status_leave');
+      case 'B': return t('dashboard.status_absent');
+      default: return '';
+    }
+  }
+
+  // اسم الإجازة الرسمية المحلي لليوم (إن وُجدت)
+  function getHolidayFor(date) {
+    if (!global.SPOfficialHolidays || typeof global.SPOfficialHolidays.getOfficialHoliday !== 'function') return null;
+    try {
+      const s = storage.getSettings();
+      if (s.showHolidays === false) return null;
+      return global.SPOfficialHolidays.getOfficialHoliday(date);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function holidayTypeLabel(holiday) {
+    if (!holiday) return '';
+    const cat = holiday.category || holiday.type || 'public';
+    if (cat === 'national') return t('holiday.national');
+    if (cat === 'religious' || cat === 'islamic') return t('holiday.religious');
+    return t('holiday.public');
+  }
 
   // ---------- Hours & overtime computation ----------
 
@@ -281,6 +318,46 @@
 
     // ---------- حضور / مطبق ----------
 
+    // While checked in, calculate elapsed time up to this moment instead of
+    // prematurely counting the whole planned shift as completed.
+    if (
+      entry.from &&
+      !entry.to &&
+      (entry.status === 'A' || entry.status === 'X')
+    ) {
+      // Legacy records that have `from` but no `fromDate` cannot be safely
+      // interpreted as "today's open check-in" — they were created by an
+      // older app version on whatever day they belong to. Treat them as
+      // completed shifts using the configured shift hours so their working
+      // hours and salary are counted correctly.
+      if (!entry.fromDate) {
+        const configuredHours =
+          Number(storage.getSettings().shiftHours) || 12;
+        return entry.status === 'X'
+          ? configuredHours * 2
+          : configuredHours;
+      }
+
+      const startDate = entry.fromDate;
+      const todayDate = SPUtils.fmtDate(new Date());
+
+      // السجل القديم الذي لا يحتوي على انصراف لا يُحسب من تاريخ قديم حتى الآن.
+      // نعتبر اليوم السابق وردية مكتملة بحسب جدول ذلك اليوم أو ساعات الوردية بالإعدادات.
+      if (startDate < todayDate) {
+        const scheduledCode = storage.getScheduledCode(startDate);
+        const scheduledShift = scheduledCode ? storage.getShiftByCode(scheduledCode) : null;
+        const scheduledHours = scheduledShift ? Number(scheduledShift.hours) : 0;
+        const configuredHours = Number(storage.getSettings().shiftHours) || 12;
+        const completedHours = scheduledHours > 0 ? scheduledHours : configuredHours;
+        return entry.status === 'X' ? completedHours * 2 : completedHours;
+      }
+
+      const startedAt = new Date(startDate + 'T' + entry.from + ':00');
+      if (!Number.isNaN(startedAt.getTime())) {
+        return Math.max(0, (Date.now() - startedAt.getTime()) / 3600000);
+      }
+    }
+
     if (
       entry.from &&
       entry.to &&
@@ -435,14 +512,22 @@
         : null;
 
     $('#daySheetTitle').textContent =
-      `${date.getDate()} ${
-        monthNamesAr[
-          date.getMonth()
-        ]
-      } ${date.getFullYear()}`;
+      SPi18n
+        ? SPi18n.formatDate(date, { day: 'numeric', month: 'long', year: 'numeric' })
+        : `${date.getDate()} ${
+            monthNamesAr[
+              date.getMonth()
+            ]
+          } ${date.getFullYear()}`;
 
-    $('#daySheetHijri').textContent =
-      formatHijri(date);
+    // الهجري — قابل للإخفاء من الإعدادات
+    const s = storage.getSettings();
+    const hijriEl = $('#daySheetHijri');
+    if (hijriEl) {
+      const showHijri = s.showHijri !== false;
+      hijriEl.hidden = !showHijri;
+      hijriEl.textContent = showHijri ? formatHijri(date) : '';
+    }
 
     const shift =
       code
@@ -452,30 +537,31 @@
         : null;
 
     $('#daySheetSub').textContent =
-      `الوردية: ${
-        shift
-          ? shift.name
-          : 'غير محدد'
-      }` +
+      t('attendance.shift_line', {
+        shift: shift ? SPUtils.shiftDisplayName(shift) : t('status.unset')
+      }) +
       (
         shift &&
         shift.startTime
           ? ` — ${fmtTime12(
               shift.startTime
-            )} إلى ${fmtTime12(
+            )} ${t('common.to')} ${fmtTime12(
               shift.endTime
             )}`
           : ''
       ) +
       (
         entry
-          ? ` — الحضور: ${
-              statusLabels[
+          ? ` — ${t('attendance.attendance_line', {
+              status: statusLabel(
                 entry.status
-              ] || '—'
-            }`
+              ) || '—'
+            })}`
           : ''
       );
+
+    // لافتة الإجازة الرسمية داخل تفاصيل اليوم
+    renderDayHolidayCard(date);
 
     renderShiftPicker(
       code
@@ -572,6 +658,40 @@
       );
   }
 
+  // لافتة الإجازة الرسمية (اسم + تصنيف + حالة الاتساق مع الإعدادات)
+  function renderDayHolidayCard(date) {
+    const card = document.getElementById('dayHolidayCard');
+    if (!card) return;
+
+    const holiday = getHolidayFor(date);
+    const nameEl = document.getElementById('dayHolidayName');
+    const metaEl = document.getElementById('dayHolidayMeta');
+
+    if (!holiday) {
+      card.hidden = true;
+      return;
+    }
+
+    let name = holiday.name || '';
+    if (
+      global.SPOfficialHolidays &&
+      typeof global.SPOfficialHolidays.getHolidayLocalizedName === 'function'
+    ) {
+      name = global.SPOfficialHolidays.getHolidayLocalizedName(holiday);
+    }
+
+    if (nameEl) nameEl.textContent = name;
+
+    let meta = holidayTypeLabel(holiday);
+    const s = storage.getSettings();
+    if (s.holidaysAsLeave) {
+      meta += ' — ' + (s.holidaysPaid ? t('holiday.auto_leave_paid_note') : t('holiday.auto_leave_note'));
+    }
+    if (metaEl) metaEl.textContent = meta;
+
+    card.hidden = false;
+  }
+
   function closeDaySheet() {
     $('#dayOverlay')
       .classList.remove(
@@ -621,7 +741,7 @@
             'data-shift-code':
               s.code
           },
-          [s.name]
+          [SPUtils.shiftDisplayName(s)]
         );
 
         btn.addEventListener(
@@ -648,6 +768,9 @@
       fmtDate(
         activeDate
       );
+
+    // سجّل لـ undo قبل التعديل
+    if (window.SPUndoRedo) SPUndoRedo.pushUndo('set schedule ' + dstr);
 
     storage.setSchedule(
       dstr,
@@ -724,11 +847,11 @@
       }
 
       preview.textContent =
-        `المدة: ${h} ساعة — ${
-          fmtTime12(from)
-        } إلى ${
-          fmtTime12(to)
-        }`;
+        t('attendance.duration_preview', {
+          h: h,
+          from: fmtTime12(from),
+          to: fmtTime12(to)
+        });
     } else {
       preview.textContent =
         '';
@@ -786,11 +909,11 @@
 
     $('#daySheetHours')
       .textContent =
-      hours + ' س';
+      SPUtils.fmtHours(hours);
 
     $('#daySheetOvertime')
       .textContent =
-      overtime + ' س';
+      SPUtils.fmtHours(overtime);
 
     $('#daySheetLate')
       .textContent =
@@ -935,7 +1058,7 @@
         ) {
           if (!silent) {
             toast(
-              'التاريخ أو الوقت غير صحيح',
+              t('attendance.invalid_date'),
               'error'
             );
           }
@@ -951,7 +1074,7 @@
         if (hours <= 0) {
           if (!silent) {
             toast(
-              'تاريخ ووقت النهاية يجب أن يكون بعد البداية',
+              t('attendance.end_after_start'),
               'error'
             );
           }
@@ -962,7 +1085,7 @@
         if (hours > 36) {
           if (!silent) {
             toast(
-              'أقصى مدة لتسجيل الحضور هي 36 ساعة',
+              t('attendance.max_36'),
               'error'
             );
           }
@@ -1183,27 +1306,57 @@
       }
     }
 
-    // ---------- تسجيل حضور سريع ----------
+    // ---------- تسجيل حضور سريع من التقويم ----------
 
     if (
       code === 'A' &&
       !from &&
       !to
     ) {
-      entry.from =
-        nowHHMM();
+      const selectedDate = fmtDate(activeDate);
+      const todayDate = fmtDate(new Date());
 
-      $('#inpFrom').value =
-        entry.from;
+      if (selectedDate === todayDate) {
+        // اليوم الحالي: ابدأ حساب الوقت الفعلي من لحظة الضغط.
+        entry.from = nowHHMM();
+        entry.fromDate = selectedDate;
+        $('#inpFrom').value = entry.from;
+        if ($('#inpFromDate')) $('#inpFromDate').value = selectedDate;
+      } else {
+        // اليوم السابق: استخدم وقت الوردية المجدولة بدل وقت الساعة الحالي.
+        // إذا لم توجد وردية، يحتسب التطبيق ساعات الوردية من الإعدادات.
+        const scheduledCode = storage.getScheduledCode(selectedDate);
+        const scheduledShift = scheduledCode ? storage.getShiftByCode(scheduledCode) : null;
 
-      if (
-        $('#inpFromDate') &&
-        !$('#inpFromDate').value
-      ) {
-        $('#inpFromDate').value =
-          fmtDate(
-            activeDate
-          );
+        // سجّل الوردية كاملة لليوم السابق حتى تظهر الساعات وتدخل في الراتب.
+        const startTime = scheduledShift && scheduledShift.startTime
+          ? scheduledShift.startTime
+          : '07:00';
+        const configuredHours = Number(storage.getSettings().shiftHours) || 12;
+        const shiftHours = scheduledShift && Number(scheduledShift.hours) > 0
+          ? Number(scheduledShift.hours)
+          : configuredHours;
+        const endTime = scheduledShift && scheduledShift.endTime
+          ? scheduledShift.endTime
+          : (() => {
+              const parts = startTime.split(':').map(Number);
+              const total = parts[0] * 60 + parts[1] + Math.round(shiftHours * 60);
+              const mins = ((total % 1440) + 1440) % 1440;
+              return String(Math.floor(mins / 60)).padStart(2, '0') + ':' +
+                String(mins % 60).padStart(2, '0');
+            })();
+
+        entry.from = startTime;
+        entry.to = endTime;
+        entry.fromDate = selectedDate;
+        const overnight = endTime <= startTime;
+        const nextDate = new Date(activeDate);
+        nextDate.setDate(nextDate.getDate() + 1);
+        entry.toDate = overnight ? fmtDate(nextDate) : selectedDate;
+        $('#inpFrom').value = entry.from;
+        $('#inpTo').value = entry.to;
+        if ($('#inpFromDate')) $('#inpFromDate').value = entry.fromDate;
+        if ($('#inpToDate')) $('#inpToDate').value = entry.toDate;
       }
     }
 
@@ -1231,6 +1384,7 @@
         absenceReason;
     }
 
+    if (window.SPUndoRedo) SPUndoRedo.pushUndo("set entry");
     storage.setEntry(
       fmtDate(activeDate),
       entry
@@ -1246,9 +1400,9 @@
     haptic(12);
 
     toast(
-      `تم تسجيل: ${
-        statusLabels[code]
-      }`,
+      t('attendance.saved_status', {
+        status: statusLabel(code)
+      }),
       'success'
     );
 
@@ -1266,12 +1420,12 @@
 
     const ok =
       await confirmDialog(
-        'سيتم حذف تسجيل الحضور لهذا اليوم. هل أنت متأكد؟',
+        t('attendance.delete_confirm_msg'),
         {
-          okText: 'حذف',
-          cancelText: 'إلغاء',
+          okText: t('common.delete'),
+          cancelText: t('common.cancel'),
           danger: true,
-          title: 'حذف التسجيل'
+          title: t('attendance.delete_title')
         }
       );
 
@@ -1279,6 +1433,7 @@
       return;
     }
 
+    if (window.SPUndoRedo) SPUndoRedo.pushUndo("delete entry");
     storage.deleteEntry(
       fmtDate(activeDate)
     );
@@ -1286,7 +1441,7 @@
     haptic(15);
 
     toast(
-      'تم حذف التسجيل',
+      t('attendance.deleted'),
       'success'
     );
 
@@ -1307,7 +1462,7 @@
 
     if (!entry) {
       toast(
-        'حدد نوع الحضور أولًا (حضرت / مطبق / إجازة / غياب)',
+        t('attendance.no_status'),
         'warning'
       );
 
@@ -1332,7 +1487,7 @@
         h > 36
       ) {
         toast(
-          'الوقت غير منطقي — تحقق من القيم',
+          t('attendance.invalid_time'),
           'error'
         );
 
@@ -1356,7 +1511,7 @@
         leaveHours > 24
       ) {
         toast(
-          'عدد ساعات الإجازة يجب أن يكون من 0 إلى 24 ساعة',
+          t('attendance.leave_hours_range'),
           'error'
         );
 
@@ -1364,6 +1519,7 @@
       }
     }
 
+    if (window.SPUndoRedo) SPUndoRedo.pushUndo("set entry");
     storage.setEntry(
       fmtDate(activeDate),
       entry
@@ -1379,7 +1535,7 @@
     haptic(12);
 
     toast(
-      'تم الحفظ بنجاح',
+      t('msg.saved'),
       'success'
     );
 
@@ -1396,7 +1552,7 @@
       !originalEntry
     ) {
       toast(
-        'لا يوجد تسجيل لنسخه',
+        t('attendance.nothing_to_copy'),
         'warning'
       );
 
@@ -1405,11 +1561,11 @@
 
     const ok =
       await confirmDialog(
-        'سيتم نسخ تسجيل هذا اليوم (الحالة والوقت والملاحظة) إلى أيام أخرى. تستطيع تحديد الأيام من التقويم بعد الإغلاق. اضغط مطولاً على أي يوم لتحديده ثم اضغط "تطبيق".\n\nملاحظة: لن يتم نسخ نوع الوردية.',
+        t('attendance.copy_confirm'),
         {
-          okText: 'بدء التحديد',
-          cancelText: 'إلغاء',
-          title: 'نسخ التسجيل'
+          okText: t('attendance.copy_start'),
+          cancelText: t('common.cancel'),
+          title: t('attendance.copy_title')
         }
       );
 
@@ -1420,7 +1576,7 @@
     closeDaySheet();
 
     toast(
-      'حدد الأيام في التقويم ثم اضغط "تطبيق وردية" واختر نسخ التسجيل',
+      t('attendance.copy_hint_toast'),
       'info'
     );
 
@@ -1436,13 +1592,13 @@
     );
 
     $('#selCount').textContent =
-      'حدد الأيام لنسخ التسجيل إليها';
+      t('attendance.copy_toolbar');
 
     const applyBtn =
       $('#applyShiftToSelected');
 
     applyBtn.textContent =
-      'نسخ التسجيل';
+      t('attendance.copy_title');
 
     applyBtn.dataset.mode =
       'copy';
@@ -1480,6 +1636,7 @@
         dstr;
     }
 
+    if (window.SPUndoRedo) SPUndoRedo.pushUndo("set entry");
     storage.setEntry(
       dstr,
       entry
@@ -1488,11 +1645,7 @@
     haptic(15);
 
     toast(
-      `تم تسجيل الحضور: ${
-        fmtTime12(
-          entry.from
-        )
-      }`,
+      t('attendance.checkin_done_toast', { time: fmtTime12(entry.from) }),
       'success'
     );
 
@@ -1519,7 +1672,7 @@
       )
     ) {
       toast(
-        'لم تسجل حضور بعد — اضغط "تسجيل حضور" أولًا',
+        t('attendance.no_checkin_toast'),
         'warning'
       );
 
@@ -1534,6 +1687,7 @@
         dstr;
     }
 
+    if (window.SPUndoRedo) SPUndoRedo.pushUndo("set entry");
     storage.setEntry(
       dstr,
       entry
@@ -1542,11 +1696,7 @@
     haptic(15);
 
     toast(
-      `تم تسجيل الانصراف: ${
-        fmtTime12(
-          entry.to
-        )
-      }`,
+      t('attendance.checkout_done_toast', { time: fmtTime12(entry.to) }),
       'success'
     );
 

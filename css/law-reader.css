@@ -1,0 +1,1044 @@
+/* ============================================================
+   SHIFTPRO — Egyptian Labor Law Reader (scoped)
+   ----------------------------------------------------------------
+   All rules are scoped under #page-law so they cannot leak into
+   the rest of SHIFTPRO (dashboard, calendar, salary, reports,
+   settings sheets, etc.).
+
+   Identity: restrained emerald / gold / ivory — evokes the
+   Egyptian Official Gazette aesthetic while staying readable
+   on phones, tablets, and desktops.
+   ============================================================ */
+
+/* ---------- Color tokens (scoped, do not affect SHIFTPRO) ---------- */
+#page-law {
+  /* Emerald base */
+  --law-bg: #f6f1e2;             /* warm ivory */
+  --law-bg-elev: #fdfaf0;        /* lighter ivory for cards */
+  --law-panel: #fdfaf0;
+  --law-panel-2: #f0e9d3;
+  --law-ink: #0b3a2f;            /* deep emerald ink */
+  --law-ink-2: #1f5a48;
+  --law-muted: #6f7d6e;
+  --law-line: #d8c79a;
+  --law-line-soft: #ece2c2;
+
+  --law-emerald: #0b4a3f;
+  --law-emerald-2: #146a52;
+  --law-emerald-soft: #e3efe9;
+  --law-gold: #c9a227;
+  --law-gold-2: #a9851b;
+  --law-gold-soft: #f5edd8;
+  --law-ivory: #fdfaf0;
+
+  --law-link: #0b4a3f;
+  --law-link-hover: #146a52;
+  --law-shadow: 0 4px 14px rgba(11, 74, 63, .12);
+  --law-shadow-lg: 0 14px 40px rgba(11, 74, 63, .20);
+
+  --law-r-sm: 8px;
+  --law-r-md: 12px;
+  --law-r-lg: 16px;
+  --law-r-xl: 22px;
+  --law-r-full: 999px;
+
+  --law-ease: cubic-bezier(.2, .8, .2, 1);
+  --law-dur-fast: .15s;
+  --law-dur: .25s;
+  --law-dur-slow: .4s;
+}
+
+/* Dark theme: deeper emerald, warmer ivory text */
+:root[data-theme="dark"] #page-law,
+:root[data-theme="auto"] #page-law {
+  /* default (dark fallback below) */
+}
+@media (prefers-color-scheme: dark) {
+  :root[data-theme="auto"] #page-law {
+    --law-bg: #06120f;
+    --law-bg-elev: #0a1d17;
+    --law-panel: #0a1d17;
+    --law-panel-2: #0e2a20;
+    --law-ink: #f0ead0;
+    --law-ink-2: #d3c9a3;
+    --law-muted: #8db39c;
+    --law-line: #1c3d2f;
+    --law-line-soft: #142a21;
+    --law-emerald-soft: #0e2a20;
+    --law-gold-soft: #1a2110;
+    --law-ivory: #f0ead0;
+    --law-shadow: 0 4px 14px rgba(0, 0, 0, .35);
+    --law-shadow-lg: 0 14px 40px rgba(0, 0, 0, .55);
+  }
+}
+:root[data-theme="dark"] #page-law {
+  --law-bg: #06120f;
+  --law-bg-elev: #0a1d17;
+  --law-panel: #0a1d17;
+  --law-panel-2: #0e2a20;
+  --law-ink: #f0ead0;
+  --law-ink-2: #d3c9a3;
+  --law-muted: #8db39c;
+  --law-line: #1c3d2f;
+  --law-line-soft: #142a21;
+  --law-emerald-soft: #0e2a20;
+  --law-gold-soft: #1a2110;
+  --law-ivory: #f0ead0;
+  --law-shadow: 0 4px 14px rgba(0, 0, 0, .35);
+  --law-shadow-lg: 0 14px 40px rgba(0, 0, 0, .55);
+}
+
+/* ---------- Page container ---------- */
+#page-law {
+  display: none;
+  position: relative;
+  min-height: 100vh;
+  padding: 0;
+  background: var(--law-bg);
+  color: var(--law-ink);
+  font-family: 'Cairo', 'Noto Sans Arabic', 'IBM Plex Sans Arabic', 'Segoe UI', Tahoma, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.85;
+  -webkit-font-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  overflow-x: hidden;
+}
+#page-law.active { display: block; }
+
+/* When the law page is active, hide the SHIFTPRO topbar/tabbar so the
+   reader is fully immersive. We use the body's data attribute set by JS. */
+body[data-law-active="1"] .topbar,
+body[data-law-active="1"] .tabbar {
+  display: none !important;
+}
+body[data-law-active="1"] {
+  background: var(--law-bg, #f6f1e2) !important;
+  padding-bottom: 0 !important;
+}
+
+/* ---------- Reading progress bar ---------- */
+#page-law .law-progress {
+  position: fixed;
+  top: 0;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
+  height: 3px;
+  background: rgba(11, 74, 63, .12);
+  z-index: 50;
+  pointer-events: none;
+}
+#page-law .law-progress .bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--law-gold), var(--law-emerald-2));
+  transition: width var(--law-dur) var(--law-ease);
+}
+
+/* ---------- Sticky header ---------- */
+#page-law .law-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: var(--law-emerald);
+  color: var(--law-ivory);
+  padding: 10px 14px;
+  padding-top: calc(10px + env(safe-area-inset-top));
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 2px 10px rgba(11, 74, 63, .25);
+}
+#page-law .law-topbar .law-back {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  background: rgba(255, 255, 255, .08);
+  border: 1px solid rgba(255, 255, 255, .15);
+  color: var(--law-ivory);
+  border-radius: var(--law-r-full);
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: background var(--law-dur) var(--law-ease);
+}
+#page-law .law-topbar .law-back:hover,
+#page-law .law-topbar .law-back:focus {
+  background: rgba(255, 255, 255, .18);
+  outline: none;
+}
+#page-law .law-topbar .law-back:focus-visible {
+  box-shadow: 0 0 0 3px var(--law-gold);
+}
+#page-law[dir="rtl"] .law-topbar .law-back svg { transform: scaleX(1); }
+#page-law[dir="ltr"] .law-topbar .law-back svg { transform: scaleX(-1); }
+
+#page-law .law-topbar .law-brand {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+#page-law .law-topbar .law-brand .t1 {
+  font-weight: 700;
+  font-size: .96rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#page-law .law-topbar .law-brand .t2 {
+  font-size: .72rem;
+  opacity: .8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#page-law .law-topbar .law-pagebox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+#page-law .law-topbar .law-chip {
+  font-size: .75rem;
+  background: rgba(255, 255, 255, .1);
+  padding: 4px 10px;
+  border-radius: var(--law-r-full);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  white-space: nowrap;
+}
+#page-law .law-topbar .law-searchbtn {
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, .08);
+  border: 1px solid rgba(255, 255, 255, .15);
+  color: var(--law-ivory);
+  border-radius: var(--law-r-full);
+  cursor: pointer;
+  transition: background var(--law-dur) var(--law-ease);
+}
+#page-law .law-topbar .law-searchbtn:hover,
+#page-law .law-topbar .law-searchbtn:focus {
+  background: rgba(255, 255, 255, .2);
+  outline: none;
+}
+#page-law .law-topbar .law-searchbtn:focus-visible {
+  box-shadow: 0 0 0 3px var(--law-gold);
+}
+
+#page-law .law-topbar .law-burger {
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, .08);
+  border: 1px solid rgba(255, 255, 255, .15);
+  color: var(--law-ivory);
+  border-radius: var(--law-r-full);
+  cursor: pointer;
+  font-size: 1.05rem;
+  transition: background var(--law-dur) var(--law-ease);
+}
+#page-law .law-topbar .law-burger:hover,
+#page-law .law-topbar .law-burger:focus {
+  background: rgba(255, 255, 255, .18);
+  outline: none;
+}
+#page-law .law-topbar .law-burger:focus-visible {
+  box-shadow: 0 0 0 3px var(--law-gold);
+}
+
+/* ---------- Layout: drawer + main ---------- */
+#page-law .law-layout {
+  display: block;
+  position: relative;
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 16px 14px 80px;
+}
+
+/* ---------- Drawer (Table of Contents) ---------- */
+#page-law .law-toc {
+  position: fixed;
+  inset-block-start: 0;
+  inset-block-end: 0;
+  inset-inline-end: 0;
+  width: min(86vw, 380px);
+  background: var(--law-panel);
+  z-index: 60;
+  transform: translateX(100%);
+  transition: transform var(--law-dur) var(--law-ease);
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--law-shadow-lg);
+  overflow: hidden;
+}
+#page-law[dir="rtl"] .law-toc { transform: translateX(100%); }
+#page-law[dir="ltr"] .law-toc { transform: translateX(-100%); inset-inline-start: 0; inset-inline-end: auto; }
+#page-law[dir="rtl"] .law-toc.open { transform: translateX(0); }
+#page-law[dir="ltr"] .law-toc.open { transform: translateX(0); }
+
+#page-law .law-toc-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: var(--law-emerald);
+  color: var(--law-ivory);
+}
+#page-law .law-toc-head .ttl {
+  font-weight: 700;
+  font-size: 1rem;
+}
+#page-law .law-toc-head .law-tocclose {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, .12);
+  border: none;
+  color: var(--law-ivory);
+  border-radius: var(--law-r-full);
+  cursor: pointer;
+  font-size: 1.05rem;
+}
+#page-law .law-toc-head .law-tocclose:hover { background: rgba(255, 255, 255, .25); }
+
+#page-law .law-toc-search {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--law-line);
+}
+#page-law .law-toc-search input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--law-line);
+  background: var(--law-bg);
+  color: var(--law-ink);
+  border-radius: var(--law-r-full);
+  font-family: inherit;
+  font-size: .92rem;
+  outline: none;
+  transition: border-color var(--law-dur) var(--law-ease), box-shadow var(--law-dur) var(--law-ease);
+}
+#page-law .law-toc-search input:focus {
+  border-color: var(--law-emerald);
+  box-shadow: 0 0 0 3px var(--law-emerald-soft);
+}
+
+#page-law .law-tocresults {
+  padding: 6px 8px;
+  max-height: 50vh;
+  overflow-y: auto;
+}
+#page-law .law-tocresults:empty { display: none; }
+#page-law .law-tocresults .r-item {
+  display: block;
+  padding: 10px 12px;
+  margin: 4px 0;
+  background: var(--law-gold-soft);
+  border: 1px solid var(--law-line-soft);
+  border-radius: var(--law-r-md);
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--law-ink);
+  transition: background var(--law-dur-fast) var(--law-ease);
+}
+#page-law .law-tocresults .r-item:hover,
+#page-law .law-tocresults .r-item:focus {
+  background: var(--law-emerald-soft);
+}
+#page-law .law-tocresults .r-item .r-t {
+  display: block;
+  font-weight: 700;
+  font-size: .9rem;
+  color: var(--law-emerald);
+}
+#page-law .law-tocresults .r-item .r-s {
+  display: block;
+  font-size: .82rem;
+  color: var(--law-muted);
+  margin-top: 4px;
+  line-height: 1.6;
+}
+
+#page-law .law-tocbody {
+  flex: 1;
+  overflow-y: auto;
+  padding: 6px 12px 24px;
+}
+#page-law .law-toc-quick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px 0 12px;
+  border-bottom: 1px solid var(--law-line-soft);
+  margin-bottom: 8px;
+}
+#page-law .law-toc-quick .q-chip {
+  display: inline-flex;
+  padding: 6px 12px;
+  background: var(--law-emerald-soft);
+  color: var(--law-emerald);
+  border-radius: var(--law-r-full);
+  font-size: .82rem;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: all var(--law-dur-fast) var(--law-ease);
+}
+#page-law .law-toc-quick .q-chip:hover { background: var(--law-gold-soft); }
+
+#page-law .toc-book {
+  border: 1px solid var(--law-line-soft);
+  border-radius: var(--law-r-md);
+  margin: 6px 0;
+  background: var(--law-panel);
+  overflow: hidden;
+}
+#page-law .toc-book summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 700;
+  color: var(--law-emerald);
+  background: var(--law-gold-soft);
+  font-size: .92rem;
+}
+#page-law .toc-book summary::-webkit-details-marker { display: none; }
+#page-law .toc-book .arrow { font-size: .8rem; opacity: .8; transition: transform var(--law-dur) var(--law-ease); }
+#page-law .toc-book[open] .arrow { transform: rotate(90deg); }
+#page-law .toc-book .toc-inner { padding: 8px 12px 12px; }
+#page-law .toc-book .b-name {
+  display: block;
+  font-size: .78rem;
+  color: var(--law-muted);
+  margin-bottom: 8px;
+}
+#page-law .toc-book .toc-ch {
+  font-weight: 700;
+  font-size: .85rem;
+  color: var(--law-ink-2);
+  margin: 10px 0 6px;
+  padding-top: 6px;
+  border-top: 1px dashed var(--law-line-soft);
+}
+#page-law .toc-book .toc-ch:first-child { border-top: none; padding-top: 0; }
+#page-law .toc-book .toc-ch .cn {
+  font-weight: 400;
+  color: var(--law-muted);
+  font-size: .78rem;
+}
+#page-law .toc-book .chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+#page-law .toc-book .chip {
+  display: inline-flex;
+  min-width: 32px;
+  padding: 4px 8px;
+  background: var(--law-bg);
+  color: var(--law-emerald);
+  border: 1px solid var(--law-line);
+  border-radius: var(--law-r-sm);
+  font-size: .78rem;
+  font-weight: 600;
+  text-decoration: none;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  transition: all var(--law-dur-fast) var(--law-ease);
+}
+#page-law .toc-book .chip:hover,
+#page-law .toc-book .chip.active {
+  background: var(--law-emerald);
+  color: var(--law-ivory);
+  border-color: var(--law-emerald);
+}
+
+/* ---------- Overlay ---------- */
+#page-law .law-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(11, 30, 22, .55);
+  z-index: 55;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--law-dur) var(--law-ease);
+}
+#page-law .law-overlay.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ---------- Main page ---------- */
+#page-law .law-main { min-height: 60vh; }
+#page-law .law-page { min-height: 60vh; }
+
+#page-law .law-foot {
+  margin-top: 24px;
+  padding: 14px 0;
+  border-top: 1px solid var(--law-line);
+  text-align: center;
+  color: var(--law-muted);
+  font-size: .78rem;
+  line-height: 1.7;
+}
+#page-law .law-foot b { color: var(--law-emerald); }
+
+/* ---------- Article typography ---------- */
+#page-law .crumbs {
+  font-size: .78rem;
+  color: var(--law-muted);
+  margin: 0 0 12px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+#page-law .crumb { color: var(--law-emerald); text-decoration: none; font-weight: 600; }
+#page-law .crumb:hover { color: var(--law-emerald-2); text-decoration: underline; }
+#page-law .crumb.sep { color: var(--law-muted); opacity: .6; }
+
+#page-law .paper {
+  background: var(--law-panel);
+  border: 1px solid var(--law-line-soft);
+  border-radius: var(--law-r-lg);
+  padding: 22px 18px;
+  box-shadow: var(--law-shadow);
+}
+#page-law .art-body { padding: 0; }
+
+#page-law .tag-preamble {
+  display: inline-block;
+  background: var(--law-gold-soft);
+  color: var(--law-gold-2);
+  border: 1px solid var(--law-gold);
+  padding: 4px 12px;
+  border-radius: var(--law-r-full);
+  font-size: .76rem;
+  font-weight: 700;
+}
+
+#page-law .art-title {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--law-emerald);
+  margin: 12px 0 4px;
+  text-align: center;
+  letter-spacing: -0.01em;
+}
+#page-law .art-sub {
+  text-align: center;
+  color: var(--law-muted);
+  font-size: .85rem;
+  margin-bottom: 14px;
+}
+
+#page-law .orn {
+  text-align: center;
+  margin: 8px 0 16px;
+  color: var(--law-gold);
+  font-size: .9rem;
+}
+#page-law .orn .dia {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: var(--law-gold);
+  transform: rotate(45deg);
+  border-radius: 2px;
+}
+
+#page-law .art-body p {
+  margin: 0 0 14px;
+  font-size: 1rem;
+  line-height: 2;
+  color: var(--law-ink);
+}
+
+#page-law .clause {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin: 0 0 10px;
+  padding: 6px 0;
+  border-bottom: 1px dashed var(--law-line-soft);
+}
+#page-law .clause:last-of-type { border-bottom: none; }
+#page-law .clause .cn {
+  flex-shrink: 0;
+  min-width: 26px;
+  font-weight: 700;
+  color: var(--law-emerald);
+  font-size: .92rem;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  background: var(--law-emerald-soft);
+  border-radius: var(--law-r-sm);
+  padding: 2px 6px;
+  height: fit-content;
+}
+#page-law .clause .ct {
+  flex: 1;
+  min-width: 0;
+}
+#page-law .clause .ct p { margin: 0; }
+
+#page-law .xref {
+  color: var(--law-emerald);
+  text-decoration: none;
+  border-bottom: 1px dashed var(--law-emerald);
+  font-weight: 600;
+  transition: color var(--law-dur-fast) var(--law-ease);
+}
+#page-law .xref:hover {
+  color: var(--law-emerald-2);
+  border-bottom-color: var(--law-emerald-2);
+}
+
+/* ---------- Cover page ---------- */
+#page-law .cover {
+  text-align: center;
+  padding: 30px 16px 20px;
+}
+#page-law .cover-frame {
+  position: relative;
+  background: var(--law-emerald);
+  color: var(--law-ivory);
+  padding: 36px 24px;
+  border-radius: var(--law-r-xl);
+  border: 2px solid var(--law-gold);
+  box-shadow: var(--law-shadow-lg);
+  max-width: 640px;
+  margin: 0 auto;
+}
+#page-law .cover-frame .co3, #page-law .cover-frame .co4 {
+  position: absolute;
+  border: 2px solid var(--law-gold);
+  border-radius: var(--law-r-md);
+  pointer-events: none;
+}
+#page-law .cover-frame .co3 { inset: 8px; }
+#page-law .cover-frame .co4 { inset: 14px; }
+
+#page-law .cover .kicker {
+  font-size: .9rem;
+  letter-spacing: 1px;
+  color: var(--law-gold);
+  margin-bottom: 10px;
+  position: relative;
+}
+#page-law .cover h1 {
+  font-size: 2.4rem;
+  margin: 0 0 6px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  position: relative;
+}
+#page-law .cover .sub {
+  font-size: .98rem;
+  opacity: .95;
+  margin-bottom: 18px;
+  position: relative;
+}
+#page-law .cover .orn2 {
+  color: var(--law-gold);
+  font-size: 1.1rem;
+  margin: 10px 0;
+  position: relative;
+}
+#page-law .cover .meta {
+  font-size: .82rem;
+  line-height: 1.7;
+  opacity: .85;
+  margin-bottom: 22px;
+  position: relative;
+}
+#page-law .cover .stats {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 24px;
+  position: relative;
+}
+#page-law .cover .stats .stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#page-law .cover .stats .stat b {
+  font-size: 1.6rem;
+  color: var(--law-gold);
+  font-weight: 800;
+}
+#page-law .cover .stats .stat span {
+  font-size: .76rem;
+  opacity: .85;
+}
+#page-law .cover-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  position: relative;
+}
+#page-law .cbtn {
+  padding: 10px 20px;
+  border-radius: var(--law-r-full);
+  font-weight: 700;
+  font-size: .92rem;
+  cursor: pointer;
+  border: 1px solid transparent;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all var(--law-dur) var(--law-ease);
+}
+#page-law .cbtn.gold {
+  background: var(--law-gold);
+  color: var(--law-emerald);
+  border-color: var(--law-gold);
+}
+#page-law .cbtn.gold:hover { background: var(--law-gold-2); color: var(--law-ivory); }
+#page-law .cbtn.ghost {
+  background: transparent;
+  color: var(--law-ivory);
+  border-color: var(--law-ivory);
+}
+#page-law .cbtn.ghost:hover { background: rgba(255, 255, 255, .1); }
+
+/* ---------- Intro page ---------- */
+#page-law .doc-head {
+  font-size: .82rem;
+  color: var(--law-muted);
+  background: var(--law-emerald-soft);
+  padding: 8px 12px;
+  border-radius: var(--law-r-sm);
+  margin-bottom: 14px;
+}
+#page-law .h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--law-emerald);
+  margin: 8px 0 6px;
+  text-align: center;
+}
+#page-law .h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--law-emerald);
+  margin: 22px 0 8px;
+  border-bottom: 2px solid var(--law-gold);
+  padding-bottom: 4px;
+  display: inline-block;
+}
+#page-law .intro-p {
+  font-size: .98rem;
+  line-height: 2;
+  color: var(--law-ink);
+  margin: 0 0 14px;
+}
+#page-law .intro-p b { color: var(--law-emerald); }
+
+#page-law .note {
+  background: var(--law-gold-soft);
+  border: 1px solid var(--law-gold);
+  border-inline-start: 4px solid var(--law-gold);
+  border-radius: var(--law-r-md);
+  padding: 12px 14px;
+  font-size: .9rem;
+  color: var(--law-ink-2);
+  margin: 16px 0;
+  line-height: 1.75;
+}
+#page-law .note.gold {
+  background: var(--law-gold-soft);
+  border-color: var(--law-gold);
+}
+#page-law .note b { color: var(--law-emerald); }
+
+#page-law .div-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--law-panel);
+  border: 1px solid var(--law-line-soft);
+  border-radius: var(--law-r-md);
+  margin: 8px 0;
+  text-decoration: none;
+  color: var(--law-ink);
+  transition: all var(--law-dur-fast) var(--law-ease);
+}
+#page-law .div-row:hover {
+  background: var(--law-emerald-soft);
+  border-color: var(--law-emerald);
+}
+#page-law .div-row .dn {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--law-emerald);
+  color: var(--law-ivory);
+  border-radius: var(--law-r-sm);
+  font-weight: 700;
+  font-size: .8rem;
+}
+#page-law .div-row .dt {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+#page-law .div-row .dt b { font-size: .96rem; color: var(--law-emerald); }
+#page-law .div-row .dt span { font-size: .82rem; color: var(--law-muted); }
+#page-law .div-row .go { color: var(--law-emerald); font-size: 1.1rem; }
+
+/* ---------- Divider hero ---------- */
+#page-law .divider-hero {
+  text-align: center;
+  padding: 24px 12px 18px;
+  background: linear-gradient(180deg, var(--law-emerald-soft), transparent);
+  border-radius: var(--law-r-md);
+  margin-bottom: 16px;
+}
+#page-law .divider-hero .bk {
+  font-size: .82rem;
+  color: var(--law-gold-2);
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+#page-law .divider-hero h2 {
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: var(--law-emerald);
+  margin: 0 0 6px;
+}
+#page-law .divider-hero .ds {
+  font-size: .92rem;
+  color: var(--law-muted);
+}
+
+#page-law .div-list { margin: 14px 0; }
+
+#page-law .chiprow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0 18px;
+}
+#page-law .chiprow .chip {
+  display: inline-flex;
+  min-width: 32px;
+  padding: 5px 10px;
+  background: var(--law-bg);
+  color: var(--law-emerald);
+  border: 1px solid var(--law-line);
+  border-radius: var(--law-r-sm);
+  font-size: .82rem;
+  font-weight: 600;
+  text-decoration: none;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  transition: all var(--law-dur-fast) var(--law-ease);
+}
+#page-law .chiprow .chip:hover {
+  background: var(--law-emerald);
+  color: var(--law-ivory);
+  border-color: var(--law-emerald);
+}
+
+/* ---------- Navigation footer ---------- */
+#page-law .pnav {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  margin: 28px 0 12px;
+  flex-wrap: wrap;
+}
+#page-law .pbtn {
+  flex: 1;
+  min-width: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 10px 12px;
+  background: var(--law-panel);
+  border: 1px solid var(--law-line);
+  border-radius: var(--law-r-md);
+  color: var(--law-emerald);
+  font-family: inherit;
+  font-size: .82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--law-dur-fast) var(--law-ease);
+}
+#page-law .pbtn:hover:not(:disabled) {
+  background: var(--law-emerald-soft);
+  border-color: var(--law-emerald);
+}
+#page-law .pbtn:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
+#page-law .pbtn small {
+  font-size: .72rem;
+  color: var(--law-muted);
+  font-weight: 400;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#page-law .goto {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: var(--law-panel-2);
+  border: 1px solid var(--law-line);
+  border-radius: var(--law-r-md);
+  font-size: .82rem;
+}
+#page-law .goto label {
+  color: var(--law-muted);
+  white-space: nowrap;
+}
+#page-law .goto input {
+  width: 50px;
+  padding: 4px 8px;
+  border: 1px solid var(--law-line);
+  background: var(--law-bg);
+  color: var(--law-ink);
+  border-radius: var(--law-r-sm);
+  font-family: inherit;
+  font-size: .82rem;
+  text-align: center;
+}
+#page-law .goto button {
+  padding: 5px 12px;
+  background: var(--law-emerald);
+  color: var(--law-ivory);
+  border: none;
+  border-radius: var(--law-r-sm);
+  font-family: inherit;
+  font-size: .82rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+#page-law .goto button:hover { background: var(--law-emerald-2); }
+
+/* ---------- Disclaimer banner ---------- */
+#page-law .law-disclaimer {
+  background: var(--law-gold-soft);
+  border: 1px solid var(--law-gold);
+  border-inline-start: 4px solid var(--law-gold);
+  border-radius: var(--law-r-md);
+  padding: 12px 14px;
+  margin: 16px 0 8px;
+  font-size: .82rem;
+  color: var(--law-ink-2);
+  line-height: 1.7;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+#page-law .law-disclaimer .law-disclaimer-ico {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--law-gold);
+  color: var(--law-ivory);
+  border-radius: var(--law-r-full);
+  font-size: .8rem;
+  font-weight: 700;
+}
+#page-law .law-disclaimer b { color: var(--law-emerald); }
+
+/* ---------- Loading & error states ---------- */
+#page-law .law-loading,
+#page-law .law-error {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--law-muted);
+}
+#page-law .law-error {
+  color: #b94c4c;
+  background: #fbeaea;
+  border: 1px solid #f1b8b8;
+  border-radius: var(--law-r-md);
+  margin: 24px;
+}
+:root[data-theme="dark"] #page-law .law-error,
+:root[data-theme="auto"] #page-law .law-error {
+  background: #2a0f10;
+  border-color: #4a2020;
+  color: #f3a3a3;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 600px) {
+  #page-law .cover h1 { font-size: 1.9rem; }
+  #page-law .cover .stats { gap: 14px; }
+  #page-law .cover .stats .stat b { font-size: 1.3rem; }
+  #page-law .art-title { font-size: 1.25rem; }
+  #page-law .paper { padding: 16px 14px; }
+  #page-law .law-topbar .law-brand .t1 { font-size: .86rem; }
+  #page-law .law-topbar .law-brand .t2 { font-size: .68rem; }
+  #page-law .law-topbar .law-chip { display: none; }
+  #page-law .pnav { flex-direction: column; }
+  #page-law .pbtn { width: 100%; }
+  #page-law .goto { width: 100%; justify-content: space-between; }
+}
+
+/* Larger screens: widen drawer */
+@media (min-width: 1120px) {
+  #page-law .law-toc {
+    width: 360px;
+  }
+}
+
+/* Print: hide controls, expand text */
+@media print {
+  #page-law .law-topbar,
+  #page-law .law-toc,
+  #page-law .law-overlay,
+  #page-law .law-progress,
+  #page-law .pnav,
+  #page-law .law-foot {
+    display: none !important;
+  }
+  #page-law .paper { box-shadow: none; border: none; }
+}
+
+
+/* Keep the labor-law index completely out of view until the user opens it. */
+#page-law .law-toc:not(.open) {
+  visibility: hidden;
+  pointer-events: none;
+}
+#page-law .law-toc.open {
+  visibility: visible;
+  pointer-events: auto;
+}

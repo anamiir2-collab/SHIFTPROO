@@ -33,43 +33,57 @@
     {
       month: 1,
       day: 7,
-      name: "عيد الميلاد المجيد"
+      name: "عيد الميلاد المجيد",
+      nameEn: "Coptic Christmas",
+      category: "religious"
     },
 
     {
       month: 1,
       day: 25,
-      name: "ثورة 25 يناير وعيد الشرطة"
+      name: "ثورة 25 يناير وعيد الشرطة",
+      nameEn: "January 25 Revolution & Police Day",
+      category: "national"
     },
 
     {
       month: 4,
       day: 25,
-      name: "عيد تحرير سيناء"
+      name: "عيد تحرير سيناء",
+      nameEn: "Sinai Liberation Day",
+      category: "national"
     },
 
     {
       month: 5,
       day: 1,
-      name: "عيد العمال"
+      name: "عيد العمال",
+      nameEn: "Labour Day",
+      category: "public"
     },
 
     {
       month: 6,
       day: 30,
-      name: "ثورة 30 يونيو"
+      name: "ثورة 30 يونيو",
+      nameEn: "June 30 Revolution Day",
+      category: "national"
     },
 
     {
       month: 7,
       day: 23,
-      name: "ثورة 23 يوليو"
+      name: "ثورة 23 يوليو",
+      nameEn: "July 23 Revolution Day",
+      category: "national"
     },
 
     {
       month: 10,
       day: 6,
-      name: "عيد القوات المسلحة – 6 أكتوبر"
+      name: "عيد القوات المسلحة – 6 أكتوبر",
+      nameEn: "Armed Forces Day – October 6",
+      category: "national"
     }
   ];
 
@@ -84,6 +98,7 @@
       month: 1,
       day: 1,
       name: "رأس السنة الهجرية",
+      nameEn: "Islamic New Year",
       duration: 1
     },
 
@@ -91,6 +106,7 @@
       month: 3,
       day: 12,
       name: "المولد النبوي الشريف",
+      nameEn: "Prophet's Birthday (Mawlid)",
       duration: 1
     },
 
@@ -98,6 +114,7 @@
       month: 10,
       day: 1,
       name: "عيد الفطر المبارك",
+      nameEn: "Eid al-Fitr",
       duration: 4
     },
 
@@ -105,6 +122,7 @@
       month: 12,
       day: 9,
       name: "وقفة عرفات",
+      nameEn: "Arafat Day",
       duration: 1
     },
 
@@ -112,9 +130,29 @@
       month: 12,
       day: 10,
       name: "عيد الأضحى المبارك",
+      nameEn: "Eid al-Adha",
       duration: 4
     }
   ];
+
+  /*
+    أسماء الأيام المتعددة لأعياد الفطر والأضحى بالإنجليزية
+    (يوم 1 يأخذ الاسم الأساسي).
+  */
+  const EID_DAY_NAMES_EN = {
+    "عيد الفطر المبارك": [
+      "Eid al-Fitr",
+      "2nd day of Eid al-Fitr",
+      "3rd day of Eid al-Fitr",
+      "4th day of Eid al-Fitr"
+    ],
+    "عيد الأضحى المبارك": [
+      "Eid al-Adha",
+      "2nd day of Eid al-Adha",
+      "3rd day of Eid al-Adha",
+      "4th day of Eid al-Adha"
+    ]
+  };
 
   /* =======================================================
      بداية شهر رمضان
@@ -126,6 +164,7 @@
     month: 9,
     day: 1,
     name: "أول رمضان",
+    nameEn: "First of Ramadan",
     type: "religious-date",
     category: "ramadan",
 
@@ -468,6 +507,18 @@
      إنشاء كائن الإجازة الرسمية
   ======================================================= */
 
+  function currentLocale() {
+    try {
+      if (
+        window.SPi18n &&
+        typeof window.SPi18n.getLocale === "function"
+      ) {
+        return window.SPi18n.getLocale();
+      }
+    } catch (e) {}
+    return "ar";
+  }
+
   function createOfficialHoliday(
     date,
     name,
@@ -478,8 +529,28 @@
 
       name,
 
-      type: "official",
+      /*
+        اسم عربي دائم (للتوافق) + اسم إنجليزي
+        عند توفره — الواجهة تختار حسب اللغة.
+      */
+      nameAr: name,
 
+      nameEn:
+        extra.nameEn || null,
+
+      /*
+        type = طبيعة اليوم:
+        - "public"   إجازة رسمية عامة
+        - "religious-date" مناسبة دينية ليست إجازة
+      */
+      type:
+        extra.type ||
+        "public",
+
+      /*
+        category = تصنيف أدق:
+        national | religious | public | islamic | ramadan | official
+      */
       category:
         extra.category ||
         "official",
@@ -536,8 +607,15 @@
           ),
           holiday.name,
           {
+            nameEn:
+              holiday.nameEn ||
+              null,
+
             category:
+              holiday.category ||
               "national",
+
+            type: "public",
 
             source:
               "gregorian"
@@ -650,8 +728,21 @@
                   ),
                   name,
                   {
+                    nameEn:
+                      (
+                        EID_DAY_NAMES_EN[
+                          holiday.name
+                        ] ||
+                        []
+                      )[i] ||
+                      holiday.nameEn ||
+                      null,
+
                     category:
-                      "islamic",
+                      "religious",
+
+                    type:
+                      "public",
 
                     source:
                       "hijri",
@@ -710,6 +801,12 @@
 
           name:
             RAMADAN_START.name,
+
+          nameAr:
+            RAMADAN_START.name,
+
+          nameEn:
+            RAMADAN_START.nameEn,
 
           type:
             RAMADAN_START.type,
@@ -808,6 +905,10 @@
               "إجازة رسمية",
 
             {
+              nameEn:
+                override.nameEn ||
+                null,
+
               category:
                 override.category ||
                 "official",
@@ -1077,8 +1178,31 @@
   }
 
   /* =======================================================
-     اسم الإجازة الرسمية
+     اسم الإجازة الرسمية (حسب اللغة الحالية)
   ======================================================= */
+
+  /*
+    - العربية: الاسم العربي الأصلي.
+    - الإنجليزية: nameEn إن وُجد، وإلا الاسم العربي
+      (لأن البيانات رسمية ولا نخترع ترجمة).
+    - دالة getOfficialHolidayNameAr تبقى للتوافق
+      مع أي كود يريد الاسم العربي صريحًا.
+  */
+
+  function getHolidayLocalizedName(holiday) {
+    if (!holiday) return "";
+
+    if (currentLocale() === "en") {
+      return holiday.nameEn || holiday.name || "";
+    }
+
+    return holiday.name || "";
+  }
+
+  function getLocalizedSpecialName(item) {
+    if (!item) return "";
+    return getHolidayLocalizedName(item);
+  }
 
   function getOfficialHolidayName(
     date
@@ -1088,9 +1212,29 @@
         date
       );
 
-    return holiday
-      ? holiday.name
-      : "";
+    return getHolidayLocalizedName(holiday);
+  }
+
+  function getOfficialHolidayNameAr(
+    date
+  ) {
+    const holiday =
+      getOfficialHoliday(
+        date
+      );
+
+    return holiday ? holiday.name : "";
+  }
+
+  function getOfficialHolidayNameEn(
+    date
+  ) {
+    const holiday =
+      getOfficialHoliday(
+        date
+      );
+
+    return holiday ? (holiday.nameEn || holiday.name || "") : "";
   }
 
   /* =======================================================
@@ -1174,6 +1318,14 @@
     getOfficialHolidayHours,
 
     getOfficialHolidayName,
+
+    getOfficialHolidayNameAr,
+
+    getOfficialHolidayNameEn,
+
+    getHolidayLocalizedName,
+
+    getLocalizedSpecialName,
 
     shouldExcludeFromSalary,
 

@@ -769,6 +769,78 @@ html {
 
 
 /* =========================================================
+   WELCOME CARD ENTRANCE (dashboard hero)
+   A refined fade-and-slide entrance. Used only once on dashboard open;
+   does NOT repeat on every render to avoid distraction.
+   ========================================================= */
+
+@keyframes welcomeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.welcome-card .welcome-head {
+  animation: welcomeIn .55s var(--sp-motion) both;
+}
+.welcome-card .clock-date-row {
+  animation: welcomeIn .55s var(--sp-motion) both;
+  animation-delay: .08s;
+}
+.welcome-card .welcome-greet,
+.welcome-card .welcome-name,
+.welcome-card .welcome-sub {
+  animation: welcomeIn .5s var(--sp-motion) both;
+}
+.welcome-card .welcome-name { animation-delay: .06s; }
+.welcome-card .welcome-sub { animation-delay: .12s; }
+
+/* Settings sections cascade-in (subtle) */
+.settings-section {
+  animation: welcomeIn .42s var(--sp-motion) both;
+}
+.settings-section:nth-child(2) { animation-delay: .04s; }
+.settings-section:nth-child(3) { animation-delay: .08s; }
+.settings-section:nth-child(4) { animation-delay: .12s; }
+.settings-section:nth-child(5) { animation-delay: .16s; }
+.settings-section:nth-child(6) { animation-delay: .20s; }
+
+/* Clock time subtle pulse on each tick — barely perceptible */
+@keyframes clockTick {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .94; }
+}
+/* Disabled: would conflict with reduced-motion. Keep keyframe but unused. */
+
+/* Sheet / modal entrance — bottom-sheet style for sheets that have .show */
+.sheet {
+  transition: transform .35s var(--sp-motion), opacity .25s ease;
+}
+.sheet.show {
+  animation: sheetIn .35s var(--sp-motion) both;
+}
+@keyframes sheetIn {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.sheet-overlay {
+  transition: opacity .25s ease;
+}
+.sheet-overlay.show {
+  animation: fadeIn .25s ease both;
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+
+/* =========================================================
    REDUCED MOTION
    ========================================================= */
 

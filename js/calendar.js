@@ -25,9 +25,50 @@
   const selectedDates = new Set();
   let onSelectChangeCb = null;
 
+  // ---------- i18n helpers ----------
+
+  function t(key, vars) {
+    return global.SPi18n ? global.SPi18n.t(key, vars) : key;
+  }
+
+  function monthName(i) {
+    return global.SPi18n ? global.SPi18n.getMonthName(i) : monthNamesAr[i];
+  }
+
+  function monthShort(i) {
+    return global.SPi18n ? global.SPi18n.getMonthShort(i) : monthShortAr[i];
+  }
+
+  // ---------- الإعدادات: خيارات العرض ----------
+
+  function displaySettings() {
+    try {
+      return storage.getSettings();
+    } catch (e) {
+      return {};
+    }
+  }
+
+  function shouldShowHolidays() {
+    return displaySettings().showHolidays !== false;
+  }
+
+  function localizedHolidayName(holiday) {
+    if (!holiday) return '';
+    if (
+      global.SPOfficialHolidays &&
+      typeof global.SPOfficialHolidays.getHolidayLocalizedName === 'function'
+    ) {
+      return global.SPOfficialHolidays.getHolidayLocalizedName(holiday);
+    }
+    return holiday.name || '';
+  }
+
   // ---------- Official Holidays ----------
 
   function getOfficialHoliday(date) {
+    // خيار "إظهار الإجازات الرسمية" = OFF يعني لا عرض ولا خصم — اليوم عادي تمامًا
+    if (!shouldShowHolidays()) return null;
     if (
       !global.SPOfficialHolidays ||
       typeof global.SPOfficialHolidays.getOfficialHoliday !== 'function'
@@ -39,6 +80,7 @@
   }
 
   function getSpecialDate(date) {
+    if (!shouldShowHolidays()) return null;
     if (
       !global.SPOfficialHolidays ||
       typeof global.SPOfficialHolidays.getSpecialDate !== 'function'
@@ -50,6 +92,7 @@
   }
 
   function isOfficialHoliday(date) {
+    if (!shouldShowHolidays()) return false;
     if (
       !global.SPOfficialHolidays ||
       typeof global.SPOfficialHolidays.isOfficialHoliday !== 'function'
@@ -61,6 +104,7 @@
   }
 
   function isRamadanStart(date) {
+    if (!shouldShowHolidays()) return false;
     if (
       !global.SPOfficialHolidays ||
       typeof global.SPOfficialHolidays.isRamadanStart !== 'function'
@@ -125,7 +169,7 @@
     return shifts
       .map(
         (s) =>
-          `<span><i class="dot" style="background:${s.color}"></i> ${s.name}</span>`
+          `<span><i class="dot" style="background:${s.color}"></i> ${SPUtils.shiftDisplayName(s)}</span>`
       )
       .join('');
   }
@@ -140,7 +184,7 @@
       return {
         bg: '',
         color: '',
-        label: 'حدد'
+        label: t('calendar.pick')
       };
     }
 
@@ -154,6 +198,12 @@
   function renderLegend() {
     $('#shiftLegend').innerHTML =
       shiftLegend();
+
+    // عنصر مفتاح "إجازة رسمية" — يظهر فقط عند تفعيل عرض الإجازات
+    const holidayLegend = document.getElementById('legendHoliday');
+    if (holidayLegend) {
+      holidayLegend.hidden = !shouldShowHolidays();
+    }
   }
 
   // ---------- Calendar ----------
@@ -169,13 +219,13 @@
 
     $('#monthLabel').textContent =
       `${start.getDate()} ${
-        monthNamesAr[
+        monthName(
           start.getMonth()
-        ]
+        )
       } – ${end.getDate()} ${
-        monthNamesAr[
+        monthName(
           end.getMonth()
-        ]
+        )
       }`;
 
     const grid =
@@ -343,6 +393,11 @@
           ' ramadan-start';
       }
 
+      // يوم إجازة رسمية: لمسة بصرية خفيفة دون تغيير سلوك اليوم
+      if (official) {
+        cellClass += ' holiday';
+      }
+
       const cell =
         el(
           'div',
@@ -398,9 +453,9 @@
       num.textContent =
         date.getDate() === 1
           ? `${date.getDate()} ${
-              monthShortAr[
+              monthShort(
                 date.getMonth()
-              ]
+              )
             }`
           : date.getDate();
 
@@ -424,20 +479,31 @@
       */
       if (officialHoliday) {
         tag.textContent =
-          officialHoliday.name;
+          localizedHolidayName(officialHoliday);
       } else if (ramadanStart) {
         tag.textContent =
-          '🌙 أول رمضان';
+          t('holiday.ramadan_start');
       } else {
         tag.textContent =
           shift
-            ? shift.name
-            : 'حدد';
+            ? SPUtils.shiftDisplayName(shift)
+            : t('calendar.pick');
       }
 
       cell.appendChild(
         tag
       );
+
+      // ---------- Holiday dot ----------
+
+      if (official) {
+        const hdot = el('i', {
+          class: 'holiday-dot',
+          'aria-hidden': 'true'
+        });
+
+        cell.appendChild(hdot);
+      }
 
       // ---------- Ramadan Label ----------
 
@@ -452,7 +518,7 @@
           );
 
         ramadanLabel.textContent =
-          'بداية رمضان';
+          t('holiday.ramadan_label');
 
         cell.appendChild(
           ramadanLabel
@@ -478,7 +544,7 @@
           );
 
         hrs.textContent =
-          hours + 'س';
+          SPUtils.fmtHours(hours);
 
         cell.appendChild(
           hrs
@@ -506,11 +572,11 @@
             ? '✓'
             : (
                 status === 'X'
-                  ? '٢'
+                  ? t('calendar.badge_double')
                   : (
                       status === 'L'
-                        ? 'إ'
-                        : 'غ'
+                        ? t('calendar.badge_leave')
+                        : t('calendar.badge_absent')
                     )
               );
 
@@ -632,27 +698,23 @@
   ) {
     let label =
       `${date.getDate()} ${
-        monthNamesAr[
+        monthName(
           date.getMonth()
-        ]
+        )
       }`;
 
     if (officialHoliday) {
-      /*
-        اسم المناسبة فقط بدون
-        وصف أنها إجازة رسمية.
-      */
       label +=
-        ` — ${officialHoliday.name}`;
+        ` — ${localizedHolidayName(officialHoliday)}`;
     } else if (ramadanStart) {
       label +=
-        ' — أول رمضان';
+        ` — ${t('holiday.ramadan_start')}`;
     } else if (shift) {
       label +=
-        ` — ${shift.name}`;
+        ` — ${SPUtils.shiftDisplayName(shift)}`;
     } else {
       label +=
-        ' — غير محدد';
+        ` — ${t('calendar.day_unset')}`;
     }
 
     return label;
@@ -700,7 +762,7 @@
         false;
 
       $('#selCount').textContent =
-        `${selectedDates.size} يوم محدد`;
+        t('calendar.selected_count', { n: selectedDates.size });
     } else {
       toolbar.classList.remove(
         'show'
@@ -757,7 +819,7 @@
             'sp-confirm-title'
         },
         [
-          'اختر الوردية'
+          t('calendar.choose_shift')
         ]
       );
 
@@ -769,7 +831,7 @@
             'sp-confirm-msg'
         },
         [
-          `سيتم تطبيق الوردية على ${selectedDates.size} يوم محدد`
+          t('calendar.will_apply', { n: selectedDates.size })
         ]
       );
 
@@ -818,7 +880,7 @@
             );
 
             SPUtils.toast(
-              `تم تطبيق وردية ${s.name} على ${selectedDates.size} يوم`,
+              t('calendar.applied', { shift: SPUtils.shiftDisplayName(s), n: selectedDates.size }),
               'success'
             );
 
@@ -842,7 +904,7 @@
             'sp-btn sp-btn-ghost'
         },
         [
-          'إلغاء'
+          t('common.cancel')
         ]
       );
 
@@ -888,9 +950,9 @@
 
     const ok =
       await SPUtils.confirmDialog(
-        `سيتم مسح نوع الوردية عن ${selectedDates.size} يوم. هل أنت متأكد؟`,
+        t('calendar.clear_confirm', { n: selectedDates.size }),
         {
-          okText: 'مسح',
+          okText: t('calendar.clear'),
           danger: true
         }
       );
@@ -913,7 +975,7 @@
     );
 
     SPUtils.toast(
-      'تم مسح الورديات المحددة',
+      t('calendar.cleared'),
       'success'
     );
 
@@ -1055,7 +1117,7 @@
     SPReports.render();
 
     SPUtils.toast(
-      'تم الانتقال للدورة الحالية',
+      t('calendar.goto_cycle'),
       'info'
     );
   }
@@ -1071,10 +1133,8 @@
   // ---------- Init ----------
 
   function init() {
-    renderLegend();
-
-    renderCalendar();
-
+    // Event wiring only. Rendering is deferred until after the first paint
+    // so opening the app stays responsive on mobile devices.
     $('#prevBtn')
       .addEventListener(
         'click',

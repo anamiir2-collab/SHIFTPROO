@@ -37,7 +37,7 @@
   // ---------- Defaults ----------
   const DEFAULT_SETTINGS = {
     // Employee
-    name: 'موظف',
+    name: '',               // يُعرض t('dashboard.default_name') لو فارغ
     job: '',
     company: '',
     employeeId: '',
@@ -65,6 +65,14 @@
     notifyShiftEnd: false,
     notifyCheckInTime: '07:00',
     notifyCheckOutTime: '19:00',
+    // ====== Date & Time / Holidays (Egypt) — opt-in by default ======
+    showClock: true,         // ساعة حية على الرئيسية
+    showHijri: true,         // التاريخ الهجري
+    showHolidays: true,      // عرض الإجازات الرسمية في التقويم (عرض فقط)
+    holidaysAsLeave: false,  // اعتبار الإجازة الرسمية إجازة تلقائيًا (opt-in)
+    holidaysPaid: false,     // الإجازات الرسمية مدفوعة (opt-in — يتطلب holidaysAsLeave)
+    holidayReminder: false,  // تذكير بالإجازات الرسمية (opt-in)
+    officialHolidayRate: 1,  // معامل العمل في الإجازة الرسمية (سلوك قائم)
     // Misc
     currency: 'ج',
     schemaVersion: 2
@@ -75,6 +83,7 @@
     {
       id: 'day',
       name: 'نهار',
+      nameEn: 'Day',
       code: 'D',
       startTime: '07:00',
       endTime: '19:00',
@@ -87,6 +96,7 @@
     {
       id: 'night',
       name: 'ليل',
+      nameEn: 'Night',
       code: 'N',
       startTime: '19:00',
       endTime: '07:00',
@@ -99,6 +109,7 @@
     {
       id: 'off',
       name: 'إجازة دورية',
+      nameEn: 'Rest day',
       code: 'O',
       startTime: '',
       endTime: '',
@@ -111,6 +122,7 @@
     {
       id: 'shift24',
       name: 'مطبق 24 ساعة',
+      nameEn: 'Double 24h',
       code: 'X',
       startTime: '07:00',
       endTime: '07:00',
@@ -149,7 +161,10 @@
       console.error('[Storage] Failed to write', key, e);
       // Likely quota exceeded
       if (global.SPUtils && SPUtils.toast) {
-        SPUtils.toast('تعذّر حفظ البيانات — مساحة التخزين ممتلئة', 'error');
+        SPUtils.toast(
+          (global.SPi18n ? SPi18n.t('msg.storage_full') : 'Storage full'),
+          'error'
+        );
       }
       return false;
     }
@@ -203,6 +218,130 @@
     });
   }
 
+  // ---------- Normalize legacy attendance entries (non-destructive) ----------
+  // Older app versions stored attendance entries with `from`/`to` time fields
+  // but did not store the corresponding `fromDate`/`toDate` calendar dates.
+  // For an overnight shift that crosses midnight, this made the actual
+  // worked-hours calculation ambiguous and led to legacy records being
+  // either dropped or counted as "today's open check-in".
+  //
+  // This migration ONLY backfills missing date fields using the entry's
+  // storage key as the canonical calendar date. It never deletes or
+  // overwrites existing user data. It runs once per install, tracked by
+  // a meta flag, and is idempotent if re-triggered.
+  function normalizeLegacyAttendance() {
+    if (getMeta('attendanceNormalizedV2')) return;
+
+    const att = getAttendance();
+    if (!att || typeof att !== 'object') {
+      setMeta('attendanceNormalizedV2', true);
+      return;
+    }
+
+    // Local helpers (avoid depending on SPUtils being loaded yet).
+    function pad2(n) { return String(n).padStart(2, '0'); }
+    function isoOffset(dstr, days) {
+      // dstr is 'YYYY-MM-DD' (canonical). Returns 'YYYY-MM-DD' offset by `days`.
+      const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(dstr || ''));
+      if (!m) return dstr;
+      const dt = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+      dt.setDate(dt.getDate() + (days || 0));
+      return dt.getFullYear() + '-' + pad2(dt.getMonth() + 1) + '-' + pad2(dt.getDate());
+    }
+    function isLegacyDateKey(key) {
+      // DD/MM/YYYY, DD-MM-YYYY, MM/DD/YYYY, MM-DD-YYYY
+      return /^\d{1,2}[/-]\d{1,2}[/-]\d{4}$/.test(String(key));
+    }
+    function legacyKeyToISO(key) {
+      // Try DD/MM/YYYY (day-first, common in EG) then MM/DD/YYYY.
+      const parts = String(key).split(/[/-]/);
+      if (parts.length !== 3) return null;
+      const a = Number(parts[0]);
+      const b = Number(parts[1]);
+      const year = Number(parts[2]);
+      if (!year) return null;
+      function mk(day, month) {
+        if (month < 1 || month > 12 || day < 1 || day > 31) return null;
+        const dt = new Date(year, month - 1, day);
+        if (dt.getMonth() !== month - 1 || dt.getDate() !== day) return null;
+        return year + '-' + pad2(month) + '-' + pad2(day);
+      }
+      // Prefer day-first interpretation when unambiguous (day > 12).
+      if (a > 12 && a <= 31 && b >= 1 && b <= 12) return mk(a, b);
+      if (b > 12 && b <= 31 && a >= 1 && a <= 12) return mk(b, a);
+      // Ambiguous (both <= 12): fall back to day-first convention.
+      const dayFirst = mk(a, b);
+      return dayFirst;
+    }
+
+    let changed = false;
+    const newAtt = {};
+    const keys = Object.keys(att);
+
+    keys.forEach((key) => {
+      const entry = att[key];
+      // Skip null/undefined values entirely.
+      if (entry == null) {
+        newAtt[key] = entry;
+        return;
+      }
+
+      // Normalize string-form legacy entries (e.g. 'A') into objects in place.
+      let normalizedEntry = entry;
+      if (typeof entry === 'string') {
+        normalizedEntry = { status: entry };
+        changed = true;
+      }
+
+      // Determine the canonical ISO date for this entry.
+      let isoDate = null;
+      if (/^\d{4}-\d{2}-\d{2}$/.test(String(key))) {
+        isoDate = key;
+      } else if (isLegacyDateKey(key)) {
+        isoDate = legacyKeyToISO(key);
+      }
+
+      // Backfill fromDate/toDate for entries that have time fields but no dates.
+      if (
+        isoDate &&
+        normalizedEntry &&
+        typeof normalizedEntry === 'object' &&
+        (normalizedEntry.from || normalizedEntry.to) &&
+        (normalizedEntry.status === 'A' || normalizedEntry.status === 'X')
+      ) {
+        if (!normalizedEntry.fromDate && normalizedEntry.from) {
+          normalizedEntry.fromDate = isoDate;
+          changed = true;
+        }
+        if (!normalizedEntry.toDate && normalizedEntry.to) {
+          // If end time <= start time, the shift crossed midnight.
+          const overnight =
+            normalizedEntry.from &&
+            String(normalizedEntry.to) <= String(normalizedEntry.from);
+          normalizedEntry.toDate = overnight ? isoOffset(isoDate, 1) : isoDate;
+          changed = true;
+        }
+      }
+
+      // Re-key legacy date keys to canonical ISO when unambiguous.
+      const finalKey = (isoDate && isLegacyDateKey(key)) ? isoDate : key;
+
+      // Never overwrite a newer record at the same canonical key with an
+      // older legacy record. Prefer existing ISO-keyed entries.
+      if (Object.prototype.hasOwnProperty.call(newAtt, finalKey) && finalKey !== key) {
+        // Keep the existing entry; drop the duplicate legacy key silently.
+        changed = true;
+        return;
+      }
+      newAtt[finalKey] = normalizedEntry;
+    });
+
+    if (changed) {
+      writeJSON(K.attendance, newAtt);
+    }
+    setMeta('attendanceNormalizedV2', true);
+  }
+
   // ---------- Pub/Sub for change notifications ----------
   const subscribers = [];
   function subscribe(cb) {
@@ -239,7 +378,28 @@
   }
   function getEntry(dstr) {
     const att = getAttendance();
-    const v = att[dstr];
+
+    // Exact ISO key is preferred.
+    let v = att[dstr];
+
+    // Compatibility with older backups that used DD/MM/YYYY or DD-MM-YYYY.
+    // Read legacy keys without rewriting or deleting the user's stored data.
+    if (!v && /^\d{4}-\d{2}-\d{2}$/.test(String(dstr))) {
+      const [year, month, day] = String(dstr).split('-');
+      const legacyKeys = [
+        day + '/' + month + '/' + year,
+        day + '-' + month + '-' + year,
+        month + '/' + day + '/' + year,
+        month + '-' + day + '-' + year
+      ];
+      for (const key of legacyKeys) {
+        if (Object.prototype.hasOwnProperty.call(att, key)) {
+          v = att[key];
+          break;
+        }
+      }
+    }
+
     if (!v) return null;
     if (typeof v === 'string') return { status: v }; // legacy
     return v;
@@ -291,6 +451,18 @@
       writeJSON(K.shifts, DEFAULT_SHIFTS.slice());
       return DEFAULT_SHIFTS.slice();
     }
+    // ترقية غير مدمرة: أضف nameEn للورديات المدمجة القديمة بدون كسر بيانات المستخدم
+    let changed = false;
+    arr.forEach((s) => {
+      if (s && s.isBuiltIn && !s.nameEn) {
+        const def = DEFAULT_SHIFTS.find((d) => d.id === s.id);
+        if (def) {
+          s.nameEn = def.nameEn;
+          changed = true;
+        }
+      }
+    });
+    if (changed) writeJSON(K.shifts, arr);
     return arr;
   }
   function getShiftById(id) {
@@ -378,7 +550,7 @@
   }
 
   function importAll(json) {
-    if (!json || !json.data) throw new Error('ملف النسخة الاحتياطية غير صالح');
+    if (!json || !json.data) throw new Error('invalid-backup-file');
     const d = json.data;
     if (d.settings) writeJSON(K.settings, Object.assign({}, DEFAULT_SETTINGS, d.settings));
     if (d.attendance && typeof d.attendance === 'object') writeJSON(K.attendance, d.attendance);
@@ -401,6 +573,7 @@
   // ---------- Init ----------
   function init() {
     migrateFromV1();
+    normalizeLegacyAttendance();
     setMeta('lastOpenedAt', new Date().toISOString());
   }
 
@@ -412,6 +585,7 @@
     DEFAULT_LEAVE_BALANCE,
     init,
     subscribe,
+    normalizeLegacyAttendance,
     // Settings
     getSettings, saveSettings,
     // Attendance
