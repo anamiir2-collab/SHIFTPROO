@@ -4728,3 +4728,26 @@ html[dir="rtl"] body select { text-align: right; }
 html[dir="ltr"] body input:not([type="date"]):not([type="time"]):not([type="number"]):not([type="checkbox"]):not([type="radio"]),
 html[dir="ltr"] body textarea,
 html[dir="ltr"] body select { text-align: left; }
+
+
+/* Settings navigation: consistent left alignment for English labels only. */
+html[dir="ltr"] .section-list .item,
+body[dir="ltr"] .section-list .item,
+[lang="en"] .section-list .item,
+[lang^="en-"] .section-list .item {
+  direction: ltr;
+  text-align: left;
+}
+html[dir="ltr"] .section-list .item .label,
+body[dir="ltr"] .section-list .item .label,
+[lang="en"] .section-list .item .label,
+[lang^="en-"] .section-list .item .label {
+  flex: 1 1 auto;
+  text-align: left;
+}
+html[dir="ltr"] .section-list .item .chev,
+body[dir="ltr"] .section-list .item .chev,
+[lang="en"] .section-list .item .chev,
+[lang^="en-"] .section-list .item .chev {
+  transform: none;
+}
