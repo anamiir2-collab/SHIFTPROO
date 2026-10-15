@@ -82,7 +82,7 @@ function dayDiff(a, b) {
 function computeSalaryForRange(baseSalary, hours, hourlyRate, overtimeHours, overtimeRate) {
   const basePay = hours * hourlyRate;
   const overtimePay = overtimeHours * hourlyRate * overtimeRate;
-  return Math.round(basePay + overtimePay);
+  return basePay + overtimePay;
 }
 
 // ---------- Jest tests ----------
