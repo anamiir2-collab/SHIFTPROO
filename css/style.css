@@ -4740,3 +4740,27 @@ html[dir="ltr"] body .section-list .item .label {
 html[dir="ltr"] body .section-list .item .chev {
   transform: none;
 }
+
+
+/* Robust LTR alignment for settings rows, whether dir is set on html or body. */
+[dir="ltr"] .section-list .item,
+[dir="ltr"] body .section-list .item,
+body[dir="ltr"] .section-list .item,
+[lang="en"] .section-list .item,
+[lang^="en-"] .section-list .item {
+  direction: ltr;
+  text-align: left;
+}
+[dir="ltr"] .section-list .item .label,
+body[dir="ltr"] .section-list .item .label,
+[lang="en"] .section-list .item .label,
+[lang^="en-"] .section-list .item .label {
+  flex: 1 1 auto;
+  text-align: left;
+}
+[dir="ltr"] .section-list .item .chev,
+body[dir="ltr"] .section-list .item .chev,
+[lang="en"] .section-list .item .chev,
+[lang^="en-"] .section-list .item .chev {
+  transform: none;
+}
