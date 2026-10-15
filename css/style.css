@@ -4730,20 +4730,20 @@ html[dir="ltr"] body textarea,
 html[dir="ltr"] body select { text-align: left; }
 
 
-/* Settings navigation: consistent left alignment for English labels only. */
+/* Settings navigation: consistent right alignment for English labels. */
 html[dir="ltr"] .section-list .item,
 body[dir="ltr"] .section-list .item,
 [lang="en"] .section-list .item,
 [lang^="en-"] .section-list .item {
   direction: ltr;
-  text-align: left;
+  text-align: right;
 }
 html[dir="ltr"] .section-list .item .label,
 body[dir="ltr"] .section-list .item .label,
 [lang="en"] .section-list .item .label,
 [lang^="en-"] .section-list .item .label {
   flex: 1 1 auto;
-  text-align: left;
+  text-align: right;
 }
 html[dir="ltr"] .section-list .item .chev,
 body[dir="ltr"] .section-list .item .chev,
