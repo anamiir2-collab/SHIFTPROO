@@ -1,0 +1,99 @@
+name: Android release bundle (Google Play)
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+
+jobs:
+  release-aab:
+    name: Build signed Android App Bundle
+    runs-on: ubuntu-latest
+    env:
+      ANDROID_HOME: /usr/local/lib/android/sdk
+      SIGNING_STORE_FILE: ${{ runner.temp }}/shiftpro-upload.jks
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Install Android SDK packages
+        shell: bash
+        run: |
+          set -euo pipefail
+          SDKMANAGER="$(find "$ANDROID_HOME/cmdline-tools" -type f -name sdkmanager | head -n 1)"
+          test -n "$SDKMANAGER"
+          yes | "$SDKMANAGER" --licenses >/dev/null || true
+          "$SDKMANAGER" "platform-tools" "platforms;android-36" "build-tools;36.0.0"
+
+      - name: Install JavaScript dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test -- --runInBand
+
+      - name: Prepare web assets
+        run: npm run prepare:web
+
+      - name: Generate and sync Android project
+        run: |
+          npx cap add android
+          npx cap sync android
+
+      - name: Validate signing secrets and decode upload keystore
+        env:
+          SIGNING_KEYSTORE_BASE64: ${{ secrets.SHIFTPRO_SIGNING_KEYSTORE_BASE64 }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -z "$SIGNING_KEYSTORE_BASE64" ]; then
+            echo "Missing SHIFTPRO_SIGNING_KEYSTORE_BASE64. Configure the four SHIFTPRO_SIGNING_* repository secrets before building a Play release."
+            exit 1
+          fi
+          printf '%s' "$SIGNING_KEYSTORE_BASE64" | base64 --decode > "$SIGNING_STORE_FILE"
+          test -s "$SIGNING_STORE_FILE"
+          chmod 600 "$SIGNING_STORE_FILE"
+
+      - name: Configure release signing
+        run: node scripts/configure-android-signing.mjs
+
+      - name: Build signed release AAB
+        env:
+          SIGNING_STORE_PASSWORD: ${{ secrets.SHIFTPRO_SIGNING_STORE_PASSWORD }}
+          SIGNING_KEY_ALIAS: ${{ secrets.SHIFTPRO_SIGNING_KEY_ALIAS }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SHIFTPRO_SIGNING_KEY_PASSWORD }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$SIGNING_STORE_PASSWORD"
+          test -n "$SIGNING_KEY_ALIAS"
+          test -n "$SIGNING_KEY_PASSWORD"
+          cd android
+          ./gradlew bundleRelease --no-daemon
+
+      - name: Verify bundle signature
+        run: |
+          set -euo pipefail
+          jarsigner -verify -verbose -certs android/app/build/outputs/bundle/release/app-release.aab
+
+      - name: Upload Play Store AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: shiftpro-google-play-aab
+          path: android/app/build/outputs/bundle/release/app-release.aab
+          if-no-files-found: error
+          retention-days: 30
