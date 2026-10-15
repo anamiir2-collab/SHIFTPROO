@@ -1,14 +1,23 @@
 {
   "name": "shiftpro",
   "version": "2.5.0",
-  "description": "ShiftPro - إدارة الورديات والحضور والرواتب (PWA)",
+  "description": "ShiftPro - إدارة الورديات والحضور والرواتب",
   "private": true,
   "scripts": {
     "test": "jest tests/",
     "test:watch": "jest --watch tests/",
-    "test:coverage": "jest tests/ --coverage"
+    "test:coverage": "jest tests/ --coverage",
+    "prepare:web": "node scripts/prepare-web.mjs",
+    "cap:sync": "npm run prepare:web && cap sync android",
+    "android:add": "npm run prepare:web && cap add android",
+    "android:open": "cap open android"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.0.0",
+    "@capacitor/core": "^8.0.0"
   },
   "devDependencies": {
+    "@capacitor/cli": "^8.0.0",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "jsdom": "^22.1.0"
