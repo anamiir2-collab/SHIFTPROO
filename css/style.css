@@ -4728,3 +4728,15 @@ html[dir="rtl"] body select { text-align: right; }
 html[dir="ltr"] body input:not([type="date"]):not([type="time"]):not([type="number"]):not([type="checkbox"]):not([type="radio"]),
 html[dir="ltr"] body textarea,
 html[dir="ltr"] body select { text-align: left; }
+
+
+/* Settings navigation: keep English menu labels consistently left-aligned. */
+html[dir="ltr"] body .section-list .item {
+  direction: ltr;
+}
+html[dir="ltr"] body .section-list .item .label {
+  text-align: left;
+}
+html[dir="ltr"] body .section-list .item .chev {
+  transform: none;
+}
