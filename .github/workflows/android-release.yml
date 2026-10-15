@@ -15,7 +15,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ANDROID_HOME: /usr/local/lib/android/sdk
-      SIGNING_STORE_FILE: ${{ runner.temp }}/shiftpro-upload.jks
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -64,9 +63,11 @@ jobs:
             echo "Missing SHIFTPRO_SIGNING_KEYSTORE_BASE64. Configure the four SHIFTPRO_SIGNING_* repository secrets before building a Play release."
             exit 1
           fi
+          SIGNING_STORE_FILE="$RUNNER_TEMP/shiftpro-upload.jks"
           printf '%s' "$SIGNING_KEYSTORE_BASE64" | base64 --decode > "$SIGNING_STORE_FILE"
           test -s "$SIGNING_STORE_FILE"
           chmod 600 "$SIGNING_STORE_FILE"
+          echo "SIGNING_STORE_FILE=$SIGNING_STORE_FILE" >> "$GITHUB_ENV"
 
       - name: Configure release signing
         run: node scripts/configure-android-signing.mjs
