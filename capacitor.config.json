@@ -1,0 +1,9 @@
+{
+  "appId": "com.anamiir2.shiftpro",
+  "appName": "ShiftPro",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": false
+  }
+}
