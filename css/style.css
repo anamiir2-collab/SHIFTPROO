@@ -4775,3 +4775,64 @@ body[dir="ltr"] .section-list .item .chev,
   background: #0b4a3f;
   color: #fdfaf0;
 }
+
+
+/* Bottom navigation: softly darkened, theme-aware floating surface. */
+.tabbar {
+  left: 12px;
+  right: 12px;
+  bottom: calc(8px + env(safe-area-inset-bottom));
+  width: auto;
+  padding: 8px 6px calc(8px + env(safe-area-inset-bottom));
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: var(--tabbar-surface, #dce5ef);
+  box-shadow: 0 8px 26px rgba(15, 30, 55, .16);
+  backdrop-filter: blur(16px) saturate(1.15);
+  -webkit-backdrop-filter: blur(16px) saturate(1.15);
+  overflow: hidden;
+  transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+:root[data-theme="light"] {
+  --tabbar-surface: #e1e8f1;
+}
+:root[data-theme="dark"] {
+  --tabbar-surface: #13292d;
+}
+@media (prefers-color-scheme: light) {
+  :root[data-theme="auto"] { --tabbar-surface: #e1e8f1; }
+}
+@media (prefers-color-scheme: dark) {
+  :root[data-theme="auto"] { --tabbar-surface: #13292d; }
+}
+.tabbar .tab-btn {
+  border-radius: 16px;
+  min-width: 0;
+  padding: 7px 2px 5px;
+}
+.tabbar .tab-btn .ic img {
+  display: block;
+  width: 23px;
+  height: 23px;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+.tabbar .tab-btn.active {
+  color: var(--accent);
+}
+.tabbar .tab-btn.active::before {
+  top: 2px;
+  width: 24px;
+  height: 3px;
+  box-shadow: 0 0 7px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+@media (max-width: 360px) {
+  .tabbar {
+    left: 7px;
+    right: 7px;
+    border-radius: 20px;
+  }
+  .tabbar .tab-btn { font-size: .62rem; }
+  .tabbar .tab-btn .ic img { width: 21px; height: 21px; }
+}
