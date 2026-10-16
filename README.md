@@ -1,4 +1,4 @@
-# ShiftPro v2.3.0 — Premium Navy Edition
+# ShiftPro v2.5.1 — Premium Navy Edition
 
 تطبيق متكامل لإدارة الورديات والحضور وساعات العمل والرواتب — **تجربة عربية أولاً**، يعمل بدون إنترنت، قابل للتثبيت (PWA) على Android و iOS و Desktop.
 
@@ -86,7 +86,7 @@ Dark mode is **carefully crafted** — not pure black; cards stay distinguishabl
 SHIFTPRO1/
 ├── index.html              # Main page structure (Dashboard / Calendar / Salary / Reports / More)
 ├── manifest.json           # PWA manifest (Arabic, RTL, navy theme)
-├── service-worker.js       # Offline cache (v2.3.0)
+├── service-worker.js       # Offline cache (v2.5.1)
 ├── README.md               # This file
 ├── .gitignore              # Git ignore rules
 ├── package.json            # Project metadata
@@ -253,7 +253,7 @@ After deploying, verify these flows:
 
 ## 📜 Version History
 
-- **v2.3.0** (current) — Premium Navy redesign, Arabic-first default, General Settings fix, welcome card + merged clock, settings section reorganization, dark mode palette, refined animations.
+- **v2.5.1** (current) — Premium Navy redesign, Arabic-first default, General Settings fix, welcome card + merged clock, settings section reorganization, dark mode palette, refined animations.
 - **v2.2.0** — iOS-style refresh, hybrid storage migration, official holidays, smart notifications.
 - **v2.1.0** — Leave management, iCal export, undo/redo.
 - **v2.0.0** — Complete rewrite with PWA support, dark mode, advanced reports.
