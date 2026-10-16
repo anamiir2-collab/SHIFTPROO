@@ -659,7 +659,7 @@
     'about.installable': 'قابل للتثبيت',
     'about.storage': 'تخزين البيانات',
     'about.storage_val': 'محلي (الجهاز)',
-    'about.summary_title': 'ملخص التطبيق',
+    'about.summary_title': 'حول التطبيق',
     'about.summary': 'تابع الورديات والحضور والإجازات وساعات العمل، وراجع تقاريرك وتفاصيل الراتب في واجهة واحدة.',
     'about.security_title': 'الخصوصية والأمان',
     'about.security_local_title': 'بياناتك على جهازك',
