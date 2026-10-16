@@ -4,9 +4,15 @@
 
 A complete shift-management, attendance, and salary-tracking PWA. **Arabic-first**, RTL by default, with English as a secondary language. Works fully offline after first load.
 
+## Current Version: v2.5.1
+
+- Aligned the app version displayed in About and the splash screen with `package.json`.
+- Updated CSS/JavaScript cache-busting query strings and the Service Worker cache key so browsers refresh assets consistently.
+- Aligned exported report/calendar metadata and stored app-version metadata with v2.5.1.
+
 ---
 
-## ✨ What's New in v2.3.0 (Premium Navy Edition)
+## ✨ What's New in v2.3.0 (Historical release notes)
 
 This release delivers a comprehensive redesign, an Arabic-first experience, and a robust fix for the previously-broken General Settings sheet.
 
