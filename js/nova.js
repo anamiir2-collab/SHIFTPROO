@@ -68,7 +68,7 @@
     }
     if (intent === 'checkin' || intent === 'checkout') {
       const button = document.getElementById(intent === 'checkin' ? 'checkinBtn' : 'checkoutBtn');
-      if (!button || button.hidden || button.disabled) return {ok:false,message:t(intent === 'checkin'?'nova.checkin_unavailable':'nova.checkout_unavailable')};
+      if (!button || button.hidden || button.disabled || button.closest('[hidden]')) return {ok:false,message:t(intent === 'checkin'?'nova.checkin_unavailable':'nova.checkout_unavailable')};
       if (!options || options.confirmed !== true) return {ok:true,requiresConfirmation:true,action:intent,message:t(intent==='checkin'?'nova.confirm_checkin':'nova.confirm_checkout')};
       button.click(); return {ok:true,message:t(intent==='checkin'?'nova.checkin_sent':'nova.checkout_sent')};
     }
@@ -109,7 +109,7 @@
     let last=0;try{last=Number(localStorage.getItem('shiftpro_nova_last_nudge_v1'))||0;}catch(e){}
     if(Date.now()-last>21600000)w.setTimeout(showNudge,7000);
     w.setInterval(()=>{let v=0;try{v=Number(localStorage.getItem('shiftpro_nova_last_nudge_v1'))||0;}catch(e){}if(Date.now()-v>21600000)showNudge();},3600000);
-    if(w.SPi18n&&w.SPi18n.subscribe)w.SPi18n.subscribe(()=>{const title=$('.nova-header-copy strong'),sub=$('.nova-header-copy span');if(title)title.textContent=t('nova.title');if(sub)sub.textContent=t('nova.subtitle');input.placeholder=t('nova.placeholder');fab.setAttribute('aria-label',t('nova.open'));});
+    if(w.SPi18n&&w.SPi18n.subscribe)w.SPi18n.subscribe(()=>{const title=$('.nova-header-copy strong'),sub=$('.nova-header-copy span'),close=$('#novaClose'),send=$('#novaSend'),label=$('label[for="novaInput"]');if(title)title.textContent=t('nova.title');if(sub)sub.textContent=t('nova.subtitle');if(close)close.setAttribute('aria-label',t('nova.close'));if(send)send.setAttribute('aria-label',t('nova.send'));if(label)label.textContent=t('nova.input_label');input.placeholder=t('nova.placeholder');fab.setAttribute('aria-label',t('nova.open'));$('#novaQuick').querySelectorAll('[data-command]').forEach((b,i)=>{const keys=['nova.quick_hours','nova.quick_salary','nova.quick_shift','nova.quick_reports'];if(keys[i])b.textContent=t(keys[i]);});});
   }
   w.SPNova={init, classifyIntent, runCommand};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
