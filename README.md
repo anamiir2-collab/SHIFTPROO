@@ -1,14 +1,14 @@
-# ShiftPro v2.5.1 — Premium Navy Edition
+# ShiftPro v2.5.2 — Premium Navy Edition
 
 تطبيق متكامل لإدارة الورديات والحضور وساعات العمل والرواتب — **تجربة عربية أولاً**، يعمل بدون إنترنت، قابل للتثبيت (PWA) على Android و iOS و Desktop.
 
 A complete shift-management, attendance, and salary-tracking PWA. **Arabic-first**, RTL by default, with English as a secondary language. Works fully offline after first load.
 
-## Current Version: v2.5.1
+## Current Version: v2.5.2
 
 - Aligned the app version displayed in About and the splash screen with `package.json`.
 - Updated CSS/JavaScript cache-busting query strings and the Service Worker cache key so browsers refresh assets consistently.
-- Aligned exported report/calendar metadata and stored app-version metadata with v2.5.1.
+- Aligned exported report/calendar metadata and stored app-version metadata with v2.5.2.
 
 ---
 
@@ -92,7 +92,7 @@ Dark mode is **carefully crafted** — not pure black; cards stay distinguishabl
 SHIFTPRO1/
 ├── index.html              # Main page structure (Dashboard / Calendar / Salary / Reports / More)
 ├── manifest.json           # PWA manifest (Arabic, RTL, navy theme)
-├── service-worker.js       # Offline cache (v2.5.1)
+├── service-worker.js       # Offline cache (v2.5.2)
 ├── README.md               # This file
 ├── .gitignore              # Git ignore rules
 ├── package.json            # Project metadata
@@ -259,7 +259,7 @@ After deploying, verify these flows:
 
 ## 📜 Version History
 
-- **v2.5.1** (current) — Premium Navy redesign, Arabic-first default, General Settings fix, welcome card + merged clock, settings section reorganization, dark mode palette, refined animations.
+- **v2.5.2** (current) — Premium Navy redesign, Arabic-first default, General Settings fix, welcome card + merged clock, settings section reorganization, dark mode palette, refined animations.
 - **v2.2.0** — iOS-style refresh, hybrid storage migration, official holidays, smart notifications.
 - **v2.1.0** — Leave management, iCal export, undo/redo.
 - **v2.0.0** — Complete rewrite with PWA support, dark mode, advanced reports.
