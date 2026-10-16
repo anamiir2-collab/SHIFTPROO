@@ -9,8 +9,8 @@
     // ====== General ======
     'app.name': 'ShiftPro',
     'app.tagline': 'Your time, calculated. Your work, organized.',
-    'app.credit': 'v2.0 — Designed & Developed by Amir Anwar',
-    'app.credit_splash': 'v2.0 • Shifts, attendance & payroll',
+    'app.credit': 'v2.5.1 — Designed & Developed by Amir Anwar',
+    'app.credit_splash': 'v2.5.1 • Shifts, attendance & payroll',
     'common.cancel': 'Cancel',
     'common.save': 'Save',
     'common.delete': 'Delete',
