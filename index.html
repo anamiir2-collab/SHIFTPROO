@@ -13,10 +13,10 @@
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" href="favicon-32.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
-  <link rel="stylesheet" href="css/style.css?v=2.5.1">
-  <link rel="stylesheet" href="css/animations.css?v=2.5.1">
-  <link rel="stylesheet" href="css/ios-style.css?v=2.5.1">
-  <link rel="stylesheet" href="css/law-reader.css?v=2.5.1">
+  <link rel="stylesheet" href="css/style.css?v=2.5.2">
+  <link rel="stylesheet" href="css/animations.css?v=2.5.2">
+  <link rel="stylesheet" href="css/ios-style.css?v=2.5.2">
+  <link rel="stylesheet" href="css/law-reader.css?v=2.5.2">
   <!-- Arabic-first typography: Cairo (Arabic) + IBM Plex Sans Arabic as fallback.
        We preconnect to Google Fonts only if the network is available; the font
        stack in CSS falls back to system fonts gracefully when offline. -->
@@ -24,9 +24,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
   <!-- i18n: العربية + الإنجليزية (يتحمّل قبل أي موديول آخر) -->
-  <script src="locales/ar.js?v=2.5.1"></script>
-  <script src="locales/en.js?v=2.5.1"></script>
-  <script src="locales/index.js?v=2.5.1"></script>
+  <script src="locales/ar.js?v=2.5.2"></script>
+  <script src="locales/en.js?v=2.5.2"></script>
+  <script src="locales/index.js?v=2.5.2"></script>
 </head>
 <body>
 
@@ -48,7 +48,7 @@
     </div>
     <h1 class="sp-brand" aria-label="SHIFT PRO"><span>SHIFT</span><span>PRO</span></h1>
     <p class="sp-tagline" data-i18n="app.tagline">وقتك محسوب.. وشغلك منظم</p>
-    <p class="sp-credit" data-i18n="app.credit_splash">v2.5.1 • إدارة الورديات والحضور والرواتب</p>
+    <p class="sp-credit" data-i18n="app.credit_splash">v2.5.2 • إدارة الورديات والحضور والرواتب</p>
     <div class="sp-progress" aria-hidden="true"><span></span></div>
   </div>
 </div>
@@ -1021,31 +1021,43 @@
   <h3><span data-i18n="about.title">عن ShiftPro</span></h3>
   <p class="sub" data-i18n="about.sub">إدارة وردياتك وحضورك ومستحقاتك في مكان واحد</p>
   <div class="card compact">
-    <div class="row between mb-2"><span class="muted" data-i18n="about.version">الإصدار</span><strong>2.5.1</strong></div>
+    <div class="row between mb-2"><span class="muted" data-i18n="about.version">الإصدار</span><strong>2.5.2</strong></div>
     <div class="row between mb-2"><span class="muted" data-i18n="about.offline">يعمل بدون إنترنت</span><strong class="success" data-i18n="common.yes">نعم</strong></div>
     <div class="row between mb-2"><span class="muted" data-i18n="about.installable">قابل للتثبيت</span><strong class="success">PWA</strong></div>
     <div class="row between"><span class="muted" data-i18n="about.storage">تخزين البيانات</span><strong data-i18n="about.storage_val">محلي (الجهاز)</strong></div>
   </div>
-  <section class="about-accordion about-summary-accordion">
+  <section class="about-accordion about-summary-accordion about-premium-card">
     <button type="button" class="about-accordion-trigger" id="aboutSummaryToggle" aria-expanded="false" aria-controls="aboutSummaryPanel">
-      <span data-i18n="about.summary_title">ملخص التطبيق</span><span class="about-accordion-chevron" aria-hidden="true">⌄</span>
+      <span class="about-trigger-main"><span class="about-feature-icon" aria-hidden="true">✦</span><span><strong data-i18n="about.summary_title">شرح التطبيق</strong><small data-i18n="about.summary_hint">اكتشف المميزات وطريقة الاستخدام</small></span></span><span class="about-accordion-chevron" aria-hidden="true">⌄</span>
     </button>
     <div class="about-accordion-panel" id="aboutSummaryPanel" aria-hidden="true">
-      <div class="about-accordion-content about-explain-card">
-        <p data-i18n="about.summary">تابع الورديات والحضور والإجازات وساعات العمل، وراجع تقاريرك وتفاصيل الراتب في واجهة واحدة.</p>
+      <div class="about-accordion-content about-detail-grid">
+        <article class="about-detail-item"><span class="about-detail-icon" aria-hidden="true">🗓️</span><div><h4 data-i18n="about.guide_calendar_title">الورديات والتقويم</h4><p data-i18n="about.guide_calendar">نظّم وردياتك في التقويم وحدد نوع الوردية لكل يوم.</p></div></article>
+        <article class="about-detail-item"><span class="about-detail-icon" aria-hidden="true">⏱️</span><div><h4 data-i18n="about.guide_attendance_title">الحضور وساعات العمل</h4><p data-i18n="about.guide_attendance">سجّل الحضور والانصراف وتابع ساعات العمل الفعلية والإضافية.</p></div></article>
+        <article class="about-detail-item"><span class="about-detail-icon" aria-hidden="true">💰</span><div><h4 data-i18n="about.guide_salary_title">الراتب والمستحقات</h4><p data-i18n="about.guide_salary">اضبط الراتب وساعات العمل والإضافي والخصومات لتقدير المستحقات.</p></div></article>
+        <article class="about-detail-item"><span class="about-detail-icon" aria-hidden="true">📊</span><div><h4 data-i18n="about.guide_reports_title">التقارير والتصدير</h4><p data-i18n="about.guide_reports">راجع تقارير الحضور والساعات والرواتب وأنشئ نسخة احتياطية.</p></div></article>
+        <article class="about-detail-item"><span class="about-detail-icon" aria-hidden="true">🏖️</span><div><h4 data-i18n="about.guide_leaves_title">الإجازات والتنبيهات</h4><p data-i18n="about.guide_leaves">تابع الإجازات والأرصدة واضبط التنبيهات المتاحة على جهازك.</p></div></article>
+        <article class="about-detail-item"><span class="about-detail-icon" aria-hidden="true">🌐</span><div><h4 data-i18n="about.guide_language_title">اللغة والعمل دون اتصال</h4><p data-i18n="about.guide_language">بدّل بين العربية والإنجليزية. تعمل الوظائف الأساسية محليًا بعد تحميل التطبيق، وقد تحتاج بعض الموارد إلى الإنترنت.</p></div></article>
+        <p class="about-disclaimer" data-i18n="about.guide_disclaimer">تعتمد النتائج على صحة البيانات والإعدادات؛ راجع سجلاتك قبل اعتمادها رسميًا.</p>
       </div>
     </div>
   </section>
-  <section class="about-accordion card compact about-security-card">
+  <section class="about-accordion about-premium-card about-security-card">
     <button type="button" class="about-accordion-trigger" id="aboutSecurityToggle" aria-expanded="false" aria-controls="aboutSecurityPanel">
-      <span data-i18n="about.security_title">الخصوصية والأمان</span><span class="about-accordion-chevron" aria-hidden="true">⌄</span>
+      <span class="about-trigger-main"><span class="about-feature-icon security" aria-hidden="true">🔐</span><span><strong data-i18n="about.security_title">الخصوصية والأمان</strong><small data-i18n="about.security_hint">كيف تُحفظ بياناتك وكيف تحافظ عليها</small></span></span><span class="about-accordion-chevron" aria-hidden="true">⌄</span>
     </button>
     <div class="about-accordion-panel" id="aboutSecurityPanel" aria-hidden="true">
       <div class="about-accordion-content about-security-content">
-        <div class="row gap-2 mb-2"><span class="ico" aria-hidden="true">🔒</span><div><strong data-i18n="about.security_local_title">بياناتك على جهازك</strong><p class="hint" data-i18n="about.security_local">تُحفظ سجلات التطبيق محليًا على جهازك؛ احرص على حماية الجهاز وقفل الشاشة.</p></div></div>
-        <div class="row gap-2 mb-2"><span class="ico" aria-hidden="true">🛡️</span><div><strong data-i18n="about.security_backup_title">النسخ الاحتياطي</strong><p class="hint" data-i18n="about.security_backup">ملفات النسخ الاحتياطي قد تحتوي على بياناتك؛ احتفظ بها في مكان آمن ولا تشاركها مع الآخرين.</p></div></div>
-        <div class="row gap-2"><span class="ico" aria-hidden="true">👁️</span><div><strong data-i18n="about.security_finance_title">إخفاء المبالغ</strong><p class="hint" data-i18n="about.security_finance">يمكنك إخفاء الأرقام المالية من داخل التطبيق عند الحاجة.</p></div></div>
-        <p class="hint about-security-note" data-i18n="about.security_note">يستخدم التطبيق قفل الشاشة الذي تضبطه على جهازك؛ ولا يقوم التطبيق نفسه بقفل الجهاز أو تشفير ملفات النسخ الاحتياطي.</p>
+        <div class="about-privacy-intro"><span aria-hidden="true">🛡️</span><div><strong data-i18n="about.privacy_intro_title">خصوصيتك تبدأ من جهازك</strong><p data-i18n="about.privacy_intro">صُمم الإصدار الحالي للاحتفاظ بسجلات العمل محليًا على جهازك، وليس لإرسالها تلقائيًا إلى خادم سحابي خاص بالتطبيق.</p></div></div>
+        <article class="about-privacy-row"><span class="about-detail-icon" aria-hidden="true">📱</span><div><h4 data-i18n="about.security_local_title">تخزين البيانات</h4><p data-i18n="about.privacy_storage">تُحفظ معلومات الملف الشخصي والورديات والحضور والإجازات وإعدادات الراتب في مساحة التخزين المحلية على جهازك.</p></div></article>
+        <article class="about-privacy-row"><span class="about-detail-icon" aria-hidden="true">🚫</span><div><h4 data-i18n="about.privacy_no_account_title">لا يوجد حساب سحابي في الإصدار الحالي</h4><p data-i18n="about.privacy_no_account">لا تتطلب الوظائف الحالية حسابًا على خادم ShiftPro، ولا تُرفع السجلات تلقائيًا للمزامنة بين الأجهزة.</p></div></article>
+        <article class="about-privacy-row"><span class="about-detail-icon" aria-hidden="true">📦</span><div><h4 data-i18n="about.security_backup_title">النسخ الاحتياطي</h4><p data-i18n="about.privacy_backup">قد تحتوي النسخ الاحتياطية على بيانات شخصية وحضور ورواتب. خزّنها بأمان ولا تشاركها مع غير المخوّلين. حذف بيانات التطبيق أو المتصفح قد يؤدي إلى فقدان السجلات المحلية.</p></div></article>
+        <article class="about-privacy-row"><span class="about-detail-icon" aria-hidden="true">🔒</span><div><h4 data-i18n="about.privacy_device_title">حماية الجهاز</h4><p data-i18n="about.privacy_device">استخدم قفل شاشة قويًا وحدّث نظام جهازك. التطبيق لا يفرض قفلًا مستقلًا على الجهاز ولا يضمن تشفير ملفات النسخ الاحتياطي.</p></div></article>
+        <article class="about-privacy-row"><span class="about-detail-icon" aria-hidden="true">🌍</span><div><h4 data-i18n="about.privacy_network_title">الاتصال والموارد الخارجية</h4><p data-i18n="about.privacy_network">قد يتصل التطبيق بموقع الاستضافة للتحديثات، وقد تُحمّل الخطوط من Google Fonts. قد تتلقى الخدمات بيانات اتصال تقنية معتادة، لكن وظائف التطبيق المعتادة لا ترسل إليها سجلات الحضور والرواتب.</p></div></article>
+        <article class="about-privacy-row"><span class="about-detail-icon" aria-hidden="true">🧹</span><div><h4 data-i18n="about.privacy_delete_title">حذف بياناتك</h4><p data-i18n="about.privacy_delete">يمكنك إدارة سجلاتك وحذف البيانات من داخل التطبيق بعد قراءة التأكيد. صدّر نسخة احتياطية أولًا إذا أردت الاحتفاظ بها؛ حذف بيانات التطبيق لا يحذف النسخ المحفوظة خارجه.</p></div></article>
+        <article class="about-privacy-row"><span class="about-detail-icon" aria-hidden="true">👁️</span><div><h4 data-i18n="about.security_finance_title">إخفاء المبالغ</h4><p data-i18n="about.security_finance">يمكنك إخفاء الأرقام المالية عند الحاجة، لكن ذلك لا يُعد تشفيرًا للبيانات المخزنة.</p></div></article>
+        <p class="about-disclaimer" data-i18n="about.privacy_notice">هذه المعلومات تصف سلوك الإصدار الحالي كما هو معروف. راجع سياسة الخصوصية الكاملة لمزيد من التفاصيل.</p>
+        <a class="about-policy-link" href="./privacy-policy.html" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">📄</span><span data-i18n="about.view_privacy_policy">قراءة سياسة الخصوصية كاملة</span><span aria-hidden="true">↗</span></a>
       </div>
     </div>
   </section>
@@ -1145,57 +1157,57 @@
 </div>
 
 <!-- ============ SCRIPTS ============ -->
-<script src="js/utils.js?v=2.5.1"></script>
-<script src="js/storage.js?v=2.5.1"></script>
-<script src="js/clock.js?v=2.5.1"></script>
-<script src="js/official-holidays.js?v=2.5.1"></script>
-<script src="js/leaves.js?v=2.5.1"></script>
-<script src="js/shift-templates.js?v=2.5.1"></script>
-<script src="js/undo-redo.js?v=2.5.1"></script>
-<script src="js/smart-notifications.js?v=2.5.1"></script>
-<script src="js/pdf-export.js?v=2.5.1"></script>
-<script src="js/charts.js?v=2.5.1"></script>
-<script src="js/backup.js?v=2.5.1"></script>
-<script src="js/app-lock.js?v=2.5.1"></script>
-<script src="js/storage-hybrid.js?v=2.5.1"></script>
-<script src="js/ux-enhancements.js?v=2.5.1"></script>
-<script src="js/ical-export.js?v=2.5.1"></script>
-<script src="js/calendar.js?v=2.5.1"></script>
-<script src="js/attendance.js?v=2.5.1"></script>
-<script src="js/salary.js?v=2.5.1"></script>
-<script src="js/reports.js?v=2.5.1"></script>
-<script src="js/settings.js?v=2.5.1"></script>
-<script src="js/welcome-messages.js?v=2.5.1"></script>
+<script src="js/utils.js?v=2.5.2"></script>
+<script src="js/storage.js?v=2.5.2"></script>
+<script src="js/clock.js?v=2.5.2"></script>
+<script src="js/official-holidays.js?v=2.5.2"></script>
+<script src="js/leaves.js?v=2.5.2"></script>
+<script src="js/shift-templates.js?v=2.5.2"></script>
+<script src="js/undo-redo.js?v=2.5.2"></script>
+<script src="js/smart-notifications.js?v=2.5.2"></script>
+<script src="js/pdf-export.js?v=2.5.2"></script>
+<script src="js/charts.js?v=2.5.2"></script>
+<script src="js/backup.js?v=2.5.2"></script>
+<script src="js/app-lock.js?v=2.5.2"></script>
+<script src="js/storage-hybrid.js?v=2.5.2"></script>
+<script src="js/ux-enhancements.js?v=2.5.2"></script>
+<script src="js/ical-export.js?v=2.5.2"></script>
+<script src="js/calendar.js?v=2.5.2"></script>
+<script src="js/attendance.js?v=2.5.2"></script>
+<script src="js/salary.js?v=2.5.2"></script>
+<script src="js/reports.js?v=2.5.2"></script>
+<script src="js/settings.js?v=2.5.2"></script>
+<script src="js/welcome-messages.js?v=2.5.2"></script>
 
 <!-- ============ EGYPTIAN LABOR LAW DATASET ============
      Order matters: law-data.js initializes window.__LAW__, then
      book files push into it. Loaded BEFORE js/law-reader.js.
      These data files are required for the law-reader tab and are
      isolated from SHIFTPRO's own storage (SPStorage / IndexedDB). -->
-<script src="js/data/law-data.js?v=2.5.1"></script>
-<script src="js/data/book-1-chapter-1.js?v=2.5.1"></script>
-<script src="js/data/book-1-chapter-2.js?v=2.5.1"></script>
-<script src="js/data/book-2-chapter-1.js?v=2.5.1"></script>
-<script src="js/data/book-2-chapter-2.js?v=2.5.1"></script>
-<script src="js/data/book-2-chapter-3.js?v=2.5.1"></script>
-<script src="js/data/book-3-chapter-1.js?v=2.5.1"></script>
-<script src="js/data/book-3-chapter-2.js?v=2.5.1"></script>
-<script src="js/data/book-3-chapter-3.js?v=2.5.1"></script>
-<script src="js/data/book-4-articles.js?v=2.5.1"></script>
-<script src="js/data/book-4-chapter-1.js?v=2.5.1"></script>
-<script src="js/data/book-4-chapter-2.js?v=2.5.1"></script>
-<script src="js/data/book-4-chapter-3.js?v=2.5.1"></script>
-<script src="js/data/book-4-chapter-4.js?v=2.5.1"></script>
-<script src="js/data/book-4-chapter-5.js?v=2.5.1"></script>
-<script src="js/data/book-5-chapter-1.js?v=2.5.1"></script>
-<script src="js/data/book-5-chapter-2.js?v=2.5.1"></script>
+<script src="js/data/law-data.js?v=2.5.2"></script>
+<script src="js/data/book-1-chapter-1.js?v=2.5.2"></script>
+<script src="js/data/book-1-chapter-2.js?v=2.5.2"></script>
+<script src="js/data/book-2-chapter-1.js?v=2.5.2"></script>
+<script src="js/data/book-2-chapter-2.js?v=2.5.2"></script>
+<script src="js/data/book-2-chapter-3.js?v=2.5.2"></script>
+<script src="js/data/book-3-chapter-1.js?v=2.5.2"></script>
+<script src="js/data/book-3-chapter-2.js?v=2.5.2"></script>
+<script src="js/data/book-3-chapter-3.js?v=2.5.2"></script>
+<script src="js/data/book-4-articles.js?v=2.5.2"></script>
+<script src="js/data/book-4-chapter-1.js?v=2.5.2"></script>
+<script src="js/data/book-4-chapter-2.js?v=2.5.2"></script>
+<script src="js/data/book-4-chapter-3.js?v=2.5.2"></script>
+<script src="js/data/book-4-chapter-4.js?v=2.5.2"></script>
+<script src="js/data/book-4-chapter-5.js?v=2.5.2"></script>
+<script src="js/data/book-5-chapter-1.js?v=2.5.2"></script>
+<script src="js/data/book-5-chapter-2.js?v=2.5.2"></script>
 
 <!-- Law reader module: consumes window.__LAW__ and exposes
      window.SPLaw. Activated only when the user opens the law tab
      via the More page card. Does not interfere with SHIFTPRO
      attendance/salary/calendar/reports/settings. -->
-<script src="js/law-reader.js?v=2.5.1"></script>
+<script src="js/law-reader.js?v=2.5.2"></script>
 
-<script src="js/app.js?v=2.5.1"></script>
+<script src="js/app.js?v=2.5.2"></script>
 </body>
 </html>
