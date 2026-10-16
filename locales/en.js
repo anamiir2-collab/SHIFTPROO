@@ -873,7 +873,7 @@
     'law.disclaimer_title': 'Disclaimer:',
     'law.disclaimer_text': 'This app is a documentation and reading aid; the legally authoritative text is the one published in the Official Gazette.',
     'law.disclaimer_full': 'This app is a documentation and reading aid for Law No. 14 of 2025. The legally authoritative text is the one published in the Egyptian Official Gazette. Please refer to official authorities when an official legal use is required.',
-    'law.doc_title': 'Labor Law No. 14 of 2025 - full text'
+    'law.doc_title': 'Labor Law No. 14 of 2025 - full text',
 
     // ====== NOVA local assistant ======
     'nova.title': 'NOVA',
