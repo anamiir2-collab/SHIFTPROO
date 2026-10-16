@@ -214,7 +214,7 @@
       schemaVersion: 2,
       installedAt: new Date().toISOString(),
       lastOpenedAt: new Date().toISOString(),
-      appVersion: '2.0.0'
+      appVersion: '2.5.1'
     });
   }
 
@@ -535,7 +535,7 @@
   function exportAll() {
     return {
       app: 'ShiftPro',
-      version: '2.0.0',
+      version: '2.5.1',
       exportedAt: new Date().toISOString(),
       data: {
         settings: getSettings(),
