@@ -1,10 +1,10 @@
-/* ShiftPro Service Worker - v2.5.3
+/* ShiftPro Service Worker - v2.5.4
    Strategy:
    - precache: app shell (HTML, CSS, JS, locales, icons, manifest)
    - runtime: network-first for navigations, cache-first for static assets
    - cleanup: drop old caches on activate
 */
-const SW_VERSION = 'shifpro-v2.5.3';
+const SW_VERSION = 'shifpro-v2.5.4';
 const APP_SHELL = [
   './',
   './index.html',
@@ -12,6 +12,7 @@ const APP_SHELL = [
   './css/style.css',
   './css/animations.css',
   './css/ios-style.css',
+  './css/nova.css',
   './css/law-reader.css',
   // ملفات i18n (مهمة للتشغيل الأول)
   './locales/ar.js',
@@ -40,6 +41,7 @@ const APP_SHELL = [
   './js/settings.js',
   './js/welcome-messages.js',
   './js/app.js',
+  './js/nova.js',
   // ====== Egyptian Labor Law dataset + reader ======
   // Dataset: order matters only at runtime (script tags in index.html);
   // for caching the order is irrelevant.
