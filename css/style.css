@@ -4836,3 +4836,80 @@ body[dir="ltr"] .section-list .item .chev,
   .tabbar .tab-btn { font-size: .62rem; }
   .tabbar .tab-btn .ic img { width: 21px; height: 21px; }
 }
+
+
+/* About sheet: accessible, language-aware collapsible sections */
+.about-accordion {
+  margin-block: 0.75rem;
+  min-width: 0;
+}
+.about-accordion-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md, 12px);
+  background: var(--panel-2);
+  color: var(--text);
+  font: inherit;
+  font-weight: 700;
+  text-align: start;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.about-security-card .about-accordion-trigger {
+  border: 0;
+  padding: 0.25rem 0 0.85rem;
+  background: transparent;
+}
+.about-accordion-trigger:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.about-accordion-chevron {
+  flex: 0 0 auto;
+  display: inline-block;
+  transition: transform 220ms ease;
+  font-size: 1.2em;
+  line-height: 1;
+}
+.about-accordion-trigger[aria-expanded="true"] .about-accordion-chevron {
+  transform: rotate(180deg);
+}
+.about-accordion-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition: grid-template-rows 260ms ease, opacity 200ms ease;
+}
+.about-accordion-panel > .about-accordion-content {
+  min-height: 0;
+  overflow: hidden;
+}
+.about-accordion-panel.is-open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+.about-accordion-content {
+  padding-block: 0.8rem 0.2rem;
+  text-align: start;
+  overflow-wrap: anywhere;
+}
+.about-accordion-content p {
+  margin-block: 0.35rem;
+  text-align: start;
+}
+.about-security-note {
+  border-top: 1px solid var(--line);
+  margin-top: 0.8rem !important;
+  padding-top: 0.7rem;
+}
+@media (prefers-reduced-motion: reduce) {
+  .about-accordion-panel,
+  .about-accordion-chevron {
+    transition: none;
+  }
+}
