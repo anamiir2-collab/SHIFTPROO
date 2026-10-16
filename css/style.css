@@ -4751,3 +4751,27 @@ body[dir="ltr"] .section-list .item .chev,
 [lang^="en-"] .section-list .item .chev {
   transform: none;
 }
+
+/* More page: image-based menu icons. Visual-only; preserves existing buttons and behavior. */
+#moreList .item .ico-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  overflow: hidden;
+}
+#moreList .item .ico-box .menu-icon {
+  display: block;
+  width: 22px;
+  height: 22px;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  flex: 0 0 auto;
+}
+#moreList .item .ico-box.labor-law-icon-box {
+  background: #0b4a3f;
+  color: #fdfaf0;
+}
