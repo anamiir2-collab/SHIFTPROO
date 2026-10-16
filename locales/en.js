@@ -398,7 +398,7 @@
     'export.download': 'Download',
 
     // ====== Settings ======
-    'settings.title': 'Settings',
+    'settings.title': 'Personal & Work Details',
     'settings.subtitle': 'Your basic employee and work information',
     'settings.section_salary_comp': 'Salary & Calculation',
     'settings.section_salary_comp_sub': 'Configure pay, hours, overtime, deductions, and pay cycle',
@@ -487,10 +487,10 @@
     'settings.datetime_hint': 'Display options never change your saved records. Calculation options apply only when enabled.',
 
     // ====== Page: More ======
-    'more.settings_list_title': 'Settings',
+    'more.settings_list_title': 'More',
     'more.control': 'App control',
     'more.notifications': 'Reminders & notifications',
-    'more.general': 'General settings',
+    'more.general': 'Personal Information',
     'more.datetime': 'Date & Time',
     'more.shifts': 'Shift manager',
     'more.leave': 'Leaves & balances',
