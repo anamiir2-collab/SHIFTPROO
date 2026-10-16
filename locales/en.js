@@ -889,7 +889,7 @@
     'nova.quick_reports': 'Open reports',
     'nova.intro': 'Hi {name}, I am NOVA, your assistant inside ShiftPro. I can review your work hours, estimated salary, leave balances, and open app sections. Write a request naturally. I will ask for confirmation before check-in or check-out.',
     'nova.nudge': 'Need any help, {name}? I am NOVA.',
-    'nova.hours_result': 'Total hours calculated for the pay period from {start} to {end}: {hours} hours.',
+    'nova.hours_result': 'Total actual attendance hours recorded for the pay period from {start} to {end}: {hours} hours.',
     'nova.salary_result': 'Pay period summary from {start} to {end}: estimated net {net}, gross earnings {gross}, total deductions {deductions}. Review the Salary section before relying on any amount.',
     'nova.absence_result': 'Absence days recorded in the current pay period: {count}.',
     'nova.leave_result': 'Leave balances (remaining / total):\n{balances}',
