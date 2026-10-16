@@ -45,7 +45,7 @@
     return {
       id: 'snap-' + Date.now().toString(36),
       ts: Date.now(),
-      appVersion: '2.0.0',
+      appVersion: '2.5.1',
       data: SPStorage.exportAll()
     };
   }
