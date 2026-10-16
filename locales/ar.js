@@ -398,7 +398,7 @@
     'export.download': 'تحميل',
 
     // ====== الإعدادات ======
-    'settings.title': 'الإعدادات',
+    'settings.title': 'البيانات الشخصية والوظيفية',
     'settings.subtitle': 'بيانات الموظف الأساسية ومعلومات العمل',
     'settings.section_salary_comp': 'الراتب والحساب',
     'settings.section_salary_comp_sub': 'إعداد الراتب والساعات والإضافي والخصومات ودورة الصرف',
@@ -489,10 +489,10 @@
     'settings.datetime_hint': 'العرض فقط لا يغيّر سجلاتك. خيارات الاحتساب تعمل حسب إعداداتك فقط.',
 
     // ====== الصفحة: المزيد ======
-    'more.settings_list_title': 'الإعدادات',
+    'more.settings_list_title': 'المزيد',
     'more.control': 'التحكم في التطبيق',
     'more.notifications': 'التذكيرات والإشعارات',
-    'more.general': 'الإعدادات العامة',
+    'more.general': 'المعلومات الشخصية',
     'more.datetime': 'التاريخ والوقت',
     'more.shifts': 'إدارة الورديات',
     'more.leave': 'الإجازات والأرصدة',
