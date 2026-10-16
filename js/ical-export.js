@@ -121,7 +121,7 @@
     let ical = '';
     ical += 'BEGIN:VCALENDAR\n';
     ical += 'VERSION:2.0\n';
-    ical += 'PRODID:-//ShiftPro//ShiftPro v2.0//EN\n';
+    ical += 'PRODID:-//ShiftPro//ShiftPro v2.5.1//EN\n';
     ical += 'CALSCALE:GREGORIAN\n';
     ical += 'METHOD:PUBLISH\n';
     ical += 'X-WR-CALNAME:ShiftPro\n';
