@@ -92,7 +92,7 @@ Dark mode is **carefully crafted** — not pure black; cards stay distinguishabl
 SHIFTPRO1/
 ├── index.html              # Main page structure (Dashboard / Calendar / Salary / Reports / More)
 ├── manifest.json           # PWA manifest (Arabic, RTL, navy theme)
-├── service-worker.js       # Offline cache (v2.5.2)
+├── service-worker.js       # Offline cache (v2.5.4)
 ├── README.md               # This file
 ├── .gitignore              # Git ignore rules
 ├── package.json            # Project metadata
@@ -103,7 +103,8 @@ SHIFTPRO1/
 ├── css/
 │   ├── style.css           # Premium Navy palette, all component styles, dark mode
 │   ├── ios-style.css       # iOS-inspired layer (now inherits from --sp-* tokens)
-│   └── animations.css      # Entrance animations, sheet transitions, reduced-motion guard
+│   ├── animations.css      # Entrance animations, sheet transitions, reduced-motion guard
+│   └── nova.css            # NOVA assistant panel, floating robot, and responsive styles
 ├── js/
 │   ├── utils.js            # Helpers: date, Hijri, format, toast, confirmDialog
 │   ├── storage.js          # localStorage layer with v1 → v2 migration
@@ -125,7 +126,8 @@ SHIFTPRO1/
 │   ├── ux-enhancements.js  # UX polish (privacy mode, onboarding)
 │   ├── ical-export.js      # iCal feed export
 │   ├── pdf-export.js       # PDF report generation
-│   └── app.js              # Main coordinator (dashboard, splash, PWA)
+│   ├── app.js              # Main coordinator (dashboard, splash, PWA)
+│   └── nova.js             # Local assistant commands, app actions, and confirmations
 ├── locales/
 │   ├── ar.js               # Arabic dictionary (default)
 │   ├── en.js               # English dictionary
