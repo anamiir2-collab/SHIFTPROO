@@ -405,29 +405,19 @@
   <div class="card">
     <p class="card-title" data-i18n="more.settings_list_title">المزيد</p>
     <div class="section-list" id="moreList">
-      <button class="item" data-sheet="settings">
-        <span class="ico-box">
-          <img src="assets/icon/user.png" alt="" class="meun-icon">
-          <span class="label" data-i18n="more.general">الإعدادات العامة</span>
-          <span class="chev">
-            <svg viewBox="0 0 24 24">
-              <path d="M9 6l6 6-6 6"></path>
-            </svg>
-          </span>
-      </button>
-      <button class="item" data-sheet="salarySettings"><span class="ico-box"><svg viewBox="0 0 24 24"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></span><span class="label" data-i18n="settings.section_salary_comp">الراتب والحساب</span><span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"></path></svg></span></button>
-      <button class="item" data-sheet="shifts"><span class="ico-box"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></span><span class="label" data-i18n="more.shifts">إدارة الورديات</span><span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"></path></svg></span></button>
-      <button class="item" data-sheet="leave"><span class="ico-box"><svg viewBox="0 0 24 24"><path d="M3 7h18v13H3zM3 7l3-3h12l3 3M8 12h8"></path></svg></span><span class="label" data-i18n="more.leave">الإجازات والأرصدة</span><span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"></path></svg></span></button>
-      <button class="item" data-sheet="datetime"><span class="ico-box"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></span><span class="label" data-i18n="more.datetime">التاريخ والوقت</span><span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"></path></svg></span></button>
-      <button class="item" data-sheet="notifications"><span class="ico-box"><svg viewBox="0 0 24 24"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path></svg></span><span class="label" data-i18n="more.notifications">التذكيرات والإشعارات</span><span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"></path></svg></span></button>
-      <button class="item" data-sheet="stats"><span class="ico-box"><svg viewBox="0 0 24 24"><path d="M3 3v18h18M7 14l4-4 3 3 5-6"></path></svg></span><span class="label" data-i18n="more.stats">الإحصائيات المتقدمة</span><span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"></path></svg></span></button>
-      <button class="item" data-sheet="control"><span class="ico-box"><svg viewBox="0 0 24 24"><path d="M4 5h8M8 3v2m-3 0c1.1 4 3.4 6.6 7 8"></path><path d="M13 5h7M16 5c-.8 3.6-2.7 6.5-5.2 8.8M15 12l5 7"></path></svg></span><span class="label" data-i18n="settings.link_control">اللغة والمظهر</span><span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"></path></svg></span></button>
-      <button class="item" data-sheet="backup"><span class="ico-box"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7M21 4v5h-5"></path></svg></span><span class="label" data-i18n="more.backup">النسخ الاحتياطي</span><span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"></path></svg></span></button>
-      <button class="item" id="moreLaborLawBtn" type="button"><span class="ico-box" style="background:#0b4a3f;color:#fdfaf0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6.5C10.5 4.5 8 4 6 5.5C4 7 3.5 9.5 5 11.5L12 18l7-6.5c1.5-2 1-4.5-1-6S13.5 4.5 12 6.5z"></path><path d="M8 11h8M8 14h5"></path></svg></span><span class="label" data-i18n="more.labor_law">قانون العمل المصري</span><span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"></path></svg></span></button>
-      <button class="item" data-sheet="about"><span class="ico-box"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4M12 16h.01"></path></svg></span><span class="label" data-i18n="more.about">عن التطبيق</span><span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"></path></svg></span></button>
+      <button class="item" data-sheet="settings"><span class="ico-box"><img class="menu-icon" src="images/icons/user.svg" alt="" aria-hidden="true"></span><span class="label" data-i18n="more.general">الإعدادات العامة</span><span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"></path></svg></span></button>
+      <button class="item" data-sheet="salarySettings"><span class="ico-box"><img class="menu-icon" src="images/icons/salary.svg" alt="" aria-hidden="true"></span><span class="label" data-i18n="settings.section_salary_comp">الراتب والحساب</span><span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"></path></svg></span></button>
+      <button class="item" data-sheet="shifts"><span class="ico-box"><img class="menu-icon" src="images/icons/shifts.svg" alt="" aria-hidden="true"></span><span class="label" data-i18n="more.shifts">إدارة الورديات</span><span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"></path></svg></span></button>
+      <button class="item" data-sheet="leave"><span class="ico-box"><img class="menu-icon" src="images/icons/leave.svg" alt="" aria-hidden="true"></span><span class="label" data-i18n="more.leave">الإجازات والأرصدة</span><span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"></path></svg></span></button>
+      <button class="item" data-sheet="datetime"><span class="ico-box"><img class="menu-icon" src="images/icons/datetime.svg" alt="" aria-hidden="true"></span><span class="label" data-i18n="more.datetime">التاريخ والوقت</span><span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"></path></svg></span></button>
+      <button class="item" data-sheet="notifications"><span class="ico-box"><img class="menu-icon" src="images/icons/notifications.svg" alt="" aria-hidden="true"></span><span class="label" data-i18n="more.notifications">التذكيرات والإشعارات</span><span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"></path></svg></span></button>
+      <button class="item" data-sheet="stats"><span class="ico-box"><img class="menu-icon" src="images/icons/stats.svg" alt="" aria-hidden="true"></span><span class="label" data-i18n="more.stats">الإحصائيات المتقدمة</span><span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"></path></svg></span></button>
+      <button class="item" data-sheet="control"><span class="ico-box"><img class="menu-icon" src="images/icons/control.svg" alt="" aria-hidden="true"></span><span class="label" data-i18n="settings.link_control">اللغة والمظهر</span><span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"></path></svg></span></button>
+      <button class="item" data-sheet="backup"><span class="ico-box"><img class="menu-icon" src="images/icons/backup.svg" alt="" aria-hidden="true"></span><span class="label" data-i18n="more.backup">النسخ الاحتياطي</span><span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"></path></svg></span></button>
+      <button class="item" id="moreLaborLawBtn" type="button"><span class="ico-box labor-law-icon-box"><img class="menu-icon" src="images/icons/labor-law.svg" alt="" aria-hidden="true"></span><span class="label" data-i18n="more.labor_law">قانون العمل المصري</span><span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"></path></svg></span></button>
+      <button class="item" data-sheet="about"><span class="ico-box"><img class="menu-icon" src="images/icons/about.svg" alt="" aria-hidden="true"></span><span class="label" data-i18n="more.about">عن التطبيق</span><span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"></path></svg></span></button>
     </div>
   </div>
-
 </section>
 
 <!-- ============ PAGE: EGYPTIAN LABOR LAW (scoped reader) ============ -->
