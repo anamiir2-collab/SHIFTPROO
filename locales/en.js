@@ -874,6 +874,44 @@
     'law.disclaimer_text': 'This app is a documentation and reading aid; the legally authoritative text is the one published in the Official Gazette.',
     'law.disclaimer_full': 'This app is a documentation and reading aid for Law No. 14 of 2025. The legally authoritative text is the one published in the Egyptian Official Gazette. Please refer to official authorities when an official legal use is required.',
     'law.doc_title': 'Labor Law No. 14 of 2025 - full text'
+
+    // ====== NOVA local assistant ======
+    'nova.title': 'NOVA',
+    'nova.subtitle': 'Your ShiftPro assistant',
+    'nova.open': 'Open NOVA',
+    'nova.close': 'Close NOVA',
+    'nova.input_label': 'Write a request for NOVA',
+    'nova.placeholder': 'Type your request...',
+    'nova.send': 'Send',
+    'nova.quick_hours': 'My work hours',
+    'nova.quick_salary': 'Estimated salary',
+    'nova.quick_shift': 'Next shift',
+    'nova.quick_reports': 'Open reports',
+    'nova.intro': 'Hi {name}, I am NOVA, your assistant inside ShiftPro. I can review your work hours, estimated salary, leave balances, and open app sections. Write a request naturally. I will ask for confirmation before check-in or check-out.',
+    'nova.nudge': 'Need any help, {name}? I am NOVA.',
+    'nova.hours_result': 'Total hours calculated for the pay period from {start} to {end}: {hours} hours.',
+    'nova.salary_result': 'Pay period summary from {start} to {end}: estimated net {net}, gross earnings {gross}, total deductions {deductions}. Review the Salary section before relying on any amount.',
+    'nova.absence_result': 'Absence days recorded in the current pay period: {count}.',
+    'nova.leave_result': 'Leave balances (remaining / total):\n{balances}',
+    'nova.shift_result': 'Next scheduled shift: {shift} on {date}, {start}–{end}.',
+    'nova.no_shift': 'No scheduled shift was found in the next 30 days.',
+    'nova.navigation_done': 'Opened the requested section.',
+    'nova.error_data': 'App data is not available right now. Try again after the modules finish loading.',
+    'nova.error_navigation': 'Could not open that section right now.',
+    'nova.law_unavailable': 'The Labor Law section is not available right now.',
+    'nova.checkin_unavailable': 'The check-in button is unavailable. Check today’s status on the dashboard.',
+    'nova.checkout_unavailable': 'The check-out button is unavailable. Check today’s status on the dashboard.',
+    'nova.confirm_checkin': 'Confirm checking in now? ShiftPro will use the device’s current time.',
+    'nova.confirm_checkout': 'Confirm checking out now? ShiftPro will use the device’s current time.',
+    'nova.confirm_yes': 'Confirm',
+    'nova.confirm_no': 'Cancel',
+    'nova.checkin_sent': 'The check-in command was sent to ShiftPro’s existing attendance function.',
+    'nova.checkout_sent': 'The check-out command was sent to ShiftPro’s existing attendance function.',
+    'nova.cancelled': 'Cancelled. No action was sent.',
+    'nova.help': 'I can review hours for the current pay period, estimated net salary, recorded absences, leave balances, and your next scheduled shift. I can also open Calendar, Salary, Reports, Home, and Labor Law. You can request check-in or check-out with confirmation.',
+    'nova.empty': 'Write a request first and I will try to help.',
+    'nova.unknown': 'I could not safely understand that request. Try: How many hours have I worked? Estimate my salary, or open reports.'
+
   };
 
   global.SPi18n_en = en;
