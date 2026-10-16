@@ -254,7 +254,7 @@
     reportNode.appendChild(el('div', {
       style: 'margin-top:40px;border-top:1px solid #e5e7eb;padding-top:12px;font-size:11px;color:#6b7280;text-align:center;'
     }, [
-      'ShiftPro v2.0 — ' + (isAr ? 'صدر في ' : 'Generated at ') + new Date().toLocaleString(isAr ? 'ar-EG' : 'en-US')
+      'ShiftPro v2.5.1 — ' + (isAr ? 'صدر في ' : 'Generated at ') + new Date().toLocaleString(isAr ? 'ar-EG' : 'en-US')
     ]));
 
     // اخفاء العنصر مؤقتًا
