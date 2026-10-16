@@ -24,9 +24,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
   <!-- i18n: العربية + الإنجليزية (يتحمّل قبل أي موديول آخر) -->
-  <script src="locales/ar.js?v=2.3.2"></script>
-  <script src="locales/en.js?v=2.3.2"></script>
-  <script src="locales/index.js?v=2.3.2"></script>
+  <script src="locales/ar.js?v=2.3.3"></script>
+  <script src="locales/en.js?v=2.3.3"></script>
+  <script src="locales/index.js?v=2.3.3"></script>
 </head>
 <body>
 
@@ -63,7 +63,7 @@
     <button class="icon-btn" id="searchBtn" data-i18n-aria="header.search_aria" aria-label="بحث" title="بحث">
       <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3"></path></svg>
     </button>
-    <button class="icon-btn" id="settingsQuickBtn" data-i18n-aria="header.settings_aria" data-i18n-title="header.settings_aria" aria-label="الإعدادات" title="الإعدادات">
+    <button class="icon-btn" id="settingsQuickBtn" data-i18n-aria="header.settings_aria" data-i18n-title="header.settings_aria" aria-label="البيانات الشخصية والوظيفية" title="البيانات الشخصية والوظيفية">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.8 1.8 0 0 0 .3 2l.1.1-1.8 1.8-.1-.1a1.8 1.8 0 0 0-2-.3 1.8 1.8 0 0 0-1.1 1.7v.2h-2.6v-.2a1.8 1.8 0 0 0-1.1-1.7 1.8 1.8 0 0 0-2 .3l-.1.1-1.8-1.8.1-.1a1.8 1.8 0 0 0 .3-2 1.8 1.8 0 0 0-1.7-1.1h-.2v-2.6h.2a1.8 1.8 0 0 0 1.7-1.1 1.8 1.8 0 0 0-.3-2l-.1-.1 1.8-1.8.1.1a1.8 1.8 0 0 0 2 .3 1.8 1.8 0 0 0 1.1-1.7v-.2h2.6v.2a1.8 1.8 0 0 0 1.1 1.7 1.8 1.8 0 0 0 2-.3l.1-.1 1.8 1.8-.1.1a1.8 1.8 0 0 0-.3 2 1.8 1.8 0 0 0 1.7 1.1h.2v2.6h-.2a1.8 1.8 0 0 0-1.7 1.1z"></path></svg>
     </button>
   </div>
@@ -405,7 +405,7 @@
   <div class="card">
     <p class="card-title" data-i18n="more.settings_list_title">المزيد</p>
     <div class="section-list" id="moreList">
-      <button class="item" data-sheet="settings"><span class="ico-box"><img class="menu-icon" src="images/icons/user.svg" alt="" aria-hidden="true"></span><span class="label" data-i18n="more.general">الإعدادات العامة</span><span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"></path></svg></span></button>
+      <button class="item" data-sheet="settings"><span class="ico-box"><img class="menu-icon" src="images/icons/user.svg" alt="" aria-hidden="true"></span><span class="label" data-i18n="more.general">المعلومات الشخصية</span><span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"></path></svg></span></button>
       <button class="item" data-sheet="salarySettings"><span class="ico-box"><img class="menu-icon" src="images/icons/salary.svg" alt="" aria-hidden="true"></span><span class="label" data-i18n="settings.section_salary_comp">الراتب والحساب</span><span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"></path></svg></span></button>
       <button class="item" data-sheet="shifts"><span class="ico-box"><img class="menu-icon" src="images/icons/shifts.svg" alt="" aria-hidden="true"></span><span class="label" data-i18n="more.shifts">إدارة الورديات</span><span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"></path></svg></span></button>
       <button class="item" data-sheet="leave"><span class="ico-box"><img class="menu-icon" src="images/icons/leave.svg" alt="" aria-hidden="true"></span><span class="label" data-i18n="more.leave">الإجازات والأرصدة</span><span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"></path></svg></span></button>
@@ -685,7 +685,7 @@
 <!-- ============ SHEET: SETTINGS ============ -->
 <div class="sheet-overlay" id="settingsOverlay"></div>
 <div class="sheet" id="settingsSheet" role="dialog">
-  <h3 data-i18n="settings.title">الإعدادات</h3>
+  <h3 data-i18n="settings.title">البيانات الشخصية والوظيفية</h3>
   <p class="sub" data-i18n="settings.subtitle">بيانات الموظف والراتب ودورة الصرف وإعدادات الحساب</p>
 
   <!-- ============ A. Personal Information ============ -->
