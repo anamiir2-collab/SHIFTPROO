@@ -4915,7 +4915,7 @@ body[dir="ltr"] .section-list .item .chev,
 }
 
 
-/* ShiftPro v2.5.2 — polished About, app guide and privacy panels */
+/* ShiftPro v2.5.3 — polished About, app guide and privacy panels */
 .about-premium-card{position:relative;overflow:hidden;padding:.35rem .85rem;border:1px solid color-mix(in srgb,var(--accent) 22%,var(--line));border-radius:20px;background:linear-gradient(145deg,var(--panel,var(--card)) 0%,color-mix(in srgb,var(--accent) 5%,var(--panel,var(--card))) 100%);box-shadow:0 8px 24px rgba(15,30,55,.07)}
 .about-premium-card:before{content:"";position:absolute;inset-block:14px;inset-inline-start:0;width:3px;border-radius:8px;background:linear-gradient(180deg,var(--accent),color-mix(in srgb,var(--accent) 15%,transparent))}
 .about-premium-card .about-accordion-trigger{padding:1rem .45rem;border:0;background:transparent}
@@ -4942,3 +4942,10 @@ body[dir="ltr"] .section-list .item .chev,
 .about-policy-link:focus-visible{outline:2px solid var(--text);outline-offset:3px}
 @media(min-width:520px){.about-detail-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.about-detail-grid .about-disclaimer{grid-column:1/-1}}
 @media(prefers-reduced-motion:reduce){.about-policy-link{transition:none}}
+
+/* About accordions: ensure expanded text is always visible */
+.about-accordion-panel[aria-hidden="true"]{visibility:hidden;pointer-events:none}
+.about-accordion-panel.is-open[aria-hidden="false"]{visibility:visible;pointer-events:auto;display:block;opacity:1}
+.about-accordion-panel.is-open>.about-accordion-content{overflow:visible}
+.about-detail-icon{font-size:.72rem;font-weight:800;letter-spacing:.04em;color:var(--accent);flex:0 0 38px}
+.about-privacy-mark{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;padding:.45rem .6rem;border:1px solid var(--line);border-radius:9px;color:var(--accent);font-size:.68rem;font-weight:800;letter-spacing:.08em}
