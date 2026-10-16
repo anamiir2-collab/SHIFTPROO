@@ -9,6 +9,7 @@ describe('SPNova command routing', () => {
   test('recognizes shift, navigation and attendance intents', () => {
     expect(window.SPNova.classifyIntent('ايه ورديتي الجاية؟')).toBe('next_shift');
     expect(window.SPNova.classifyIntent('افتح التقارير')).toBe('open_reports');
+    expect(window.SPNova.classifyIntent('افتح الراتب')).toBe('open_salary');
     expect(window.SPNova.classifyIntent('سجل حضور')).toBe('checkin');
     expect(window.SPNova.classifyIntent('سجل انصراف')).toBe('checkout');
   });
