@@ -12,7 +12,7 @@
     if (/(كام ساع|كم ساع|عدد الساع|ساعات.*اشتغ|اشتغلت.*ساع|worked hours|hours worked)/.test(q)) return 'hours';
     if (/(راتب|مرتب|مستحقات|صافي|salary|payroll)/.test(q)) return 'salary';
     if (/(غياب|ايام غياب|absence|absent)/.test(q)) return 'absence';
-    if (/(ورديه|شيفت|الوردية الجاي|الورديه الجاي|next shift|my shift)/.test(q)) return 'next_shift';
+    if (/(ورديه|ورديتي الجاي|ورديتي القادمه|شيفت|الوردية الجاي|الورديه الجاي|next shift|my shift)/.test(q)) return 'next_shift';
     if (/(افتح|روح|انتقل).*(تقويم|calendar)/.test(q)) return 'open_calendar';
     if (/(افتح|روح|انتقل).*(راتب|salary)/.test(q)) return 'open_salary';
     if (/(افتح|روح|انتقل).*(تقرير|تقارير|reports)/.test(q) || /(تقرير|تقارير|report)/.test(q)) return 'open_reports';
