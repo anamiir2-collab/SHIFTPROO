@@ -46,7 +46,7 @@
   // يطبّق snapshot على التخزين
   function restore(snap) {
     if (!snap || !snap.data || !global.SPStorage) return false;
-    SPStorage.importAll({ app: 'ShiftPro', version: '2.0.0', exportedAt: new Date().toISOString(), data: snap.data });
+    SPStorage.importAll({ app: 'ShiftPro', version: '2.5.1', exportedAt: new Date().toISOString(), data: snap.data });
     return true;
   }
 
