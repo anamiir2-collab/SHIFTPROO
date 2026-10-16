@@ -1026,12 +1026,28 @@
     <div class="row between mb-2"><span class="muted" data-i18n="about.installable">قابل للتثبيت</span><strong class="success">PWA</strong></div>
     <div class="row between"><span class="muted" data-i18n="about.storage">تخزين البيانات</span><strong data-i18n="about.storage_val">محلي (الجهاز)</strong></div>
   </div>
-  <div class="about-explain-card"><strong data-i18n="about.summary_title">ملخص التطبيق</strong><p data-i18n="about.summary">تابع الورديات والحضور والإجازات وساعات العمل، وراجع تقاريرك وتفاصيل الراتب في واجهة واحدة.</p></div>
-  <section class="card compact about-security-card" aria-labelledby="aboutSecurityTitle">
-    <p class="card-title" id="aboutSecurityTitle"><span data-i18n="about.security_title">الخصوصية والأمان</span></p>
-    <div class="row gap-2 mb-2"><span class="ico" aria-hidden="true">🔒</span><div><strong data-i18n="about.security_local_title">بياناتك على جهازك</strong><p class="hint" data-i18n="about.security_local">تُحفظ سجلات التطبيق محليًا على جهازك؛ احرص على حماية الجهاز وقفل الشاشة.</p></div></div>
-    <div class="row gap-2 mb-2"><span class="ico" aria-hidden="true">🛡️</span><div><strong data-i18n="about.security_backup_title">النسخ الاحتياطي</strong><p class="hint" data-i18n="about.security_backup">ملفات النسخ الاحتياطي قد تحتوي على بياناتك؛ احتفظ بها في مكان آمن ولا تشاركها مع الآخرين.</p></div></div>
-    <div class="row gap-2"><span class="ico" aria-hidden="true">👁️</span><div><strong data-i18n="about.security_finance_title">إخفاء المبالغ</strong><p class="hint" data-i18n="about.security_finance">يمكنك إخفاء الأرقام المالية من داخل التطبيق عند الحاجة.</p></div></div>
+  <section class="about-accordion about-summary-accordion">
+    <button type="button" class="about-accordion-trigger" id="aboutSummaryToggle" aria-expanded="false" aria-controls="aboutSummaryPanel">
+      <span data-i18n="about.summary_title">ملخص التطبيق</span><span class="about-accordion-chevron" aria-hidden="true">⌄</span>
+    </button>
+    <div class="about-accordion-panel" id="aboutSummaryPanel" aria-hidden="true">
+      <div class="about-accordion-content about-explain-card">
+        <p data-i18n="about.summary">تابع الورديات والحضور والإجازات وساعات العمل، وراجع تقاريرك وتفاصيل الراتب في واجهة واحدة.</p>
+      </div>
+    </div>
+  </section>
+  <section class="about-accordion card compact about-security-card">
+    <button type="button" class="about-accordion-trigger" id="aboutSecurityToggle" aria-expanded="false" aria-controls="aboutSecurityPanel">
+      <span data-i18n="about.security_title">الخصوصية والأمان</span><span class="about-accordion-chevron" aria-hidden="true">⌄</span>
+    </button>
+    <div class="about-accordion-panel" id="aboutSecurityPanel" aria-hidden="true">
+      <div class="about-accordion-content about-security-content">
+        <div class="row gap-2 mb-2"><span class="ico" aria-hidden="true">🔒</span><div><strong data-i18n="about.security_local_title">بياناتك على جهازك</strong><p class="hint" data-i18n="about.security_local">تُحفظ سجلات التطبيق محليًا على جهازك؛ احرص على حماية الجهاز وقفل الشاشة.</p></div></div>
+        <div class="row gap-2 mb-2"><span class="ico" aria-hidden="true">🛡️</span><div><strong data-i18n="about.security_backup_title">النسخ الاحتياطي</strong><p class="hint" data-i18n="about.security_backup">ملفات النسخ الاحتياطي قد تحتوي على بياناتك؛ احتفظ بها في مكان آمن ولا تشاركها مع الآخرين.</p></div></div>
+        <div class="row gap-2"><span class="ico" aria-hidden="true">👁️</span><div><strong data-i18n="about.security_finance_title">إخفاء المبالغ</strong><p class="hint" data-i18n="about.security_finance">يمكنك إخفاء الأرقام المالية من داخل التطبيق عند الحاجة.</p></div></div>
+        <p class="hint about-security-note" data-i18n="about.security_note">يستخدم التطبيق قفل الشاشة الذي تضبطه على جهازك؛ ولا يقوم التطبيق نفسه بقفل الجهاز أو تشفير ملفات النسخ الاحتياطي.</p>
+      </div>
+    </div>
   </section>
   <div class="credit">
     <div class="avatar">أ</div>
