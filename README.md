@@ -1,10 +1,10 @@
-# ShiftPro v2.5.2 — Premium Navy Edition
+# ShiftPro v2.5.4 — Premium Navy Edition
 
 تطبيق متكامل لإدارة الورديات والحضور وساعات العمل والرواتب — **تجربة عربية أولاً**، يعمل بدون إنترنت، قابل للتثبيت (PWA) على Android و iOS و Desktop.
 
 A complete shift-management, attendance, and salary-tracking PWA. **Arabic-first**, RTL by default, with English as a secondary language. Works fully offline after first load.
 
-## Current Version: v2.5.2
+## Current Version: v2.5.4
 
 - Aligned the app version displayed in About and the splash screen with `package.json`.
 - Updated CSS/JavaScript cache-busting query strings and the Service Worker cache key so browsers refresh assets consistently.
@@ -141,6 +141,15 @@ SHIFTPRO1/
 ```
 
 ---
+
+### 🤖 NOVA — Local In-App Assistant (v2.5.4)
+
+- Adds a floating animated assistant that follows ShiftPro theme tokens, supports RTL/LTR, and respects reduced-motion settings.
+- Uses an explicit local command allowlist; no external AI API and no employee data is sent to a third party.
+- Reads hours/salary through `SPSalary.computeSalary()`, leave balances through `SPLeaves.calculateBalances()`, and scheduled shifts through `SPStorage`.
+- Navigates existing app sections and asks for confirmation before check-in/check-out.
+- Unknown commands are not executed. This release is a deterministic local assistant, not a connected generative-AI model.
+- Intent routing tests are in `tests/nova.test.js`.
 
 ## 🚀 Running Locally
 
