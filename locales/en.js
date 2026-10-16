@@ -651,15 +651,21 @@
 
     // ====== Sheet: About ======
     'about.title': 'About ShiftPro',
-    'about.sub': 'A complete shifts, attendance, hours and salary manager',
+    'about.sub': 'Manage shifts, attendance and pay in one place',
     'about.version': 'Version',
     'about.offline': 'Works offline',
     'about.installable': 'Installable',
     'about.storage': 'Data storage',
     'about.storage_val': 'Local (device)',
-    'about.explain_title': 'What ShiftPro does',
-    'about.explain': 'ShiftPro tracks your shifts, attendance, check-outs, overtime and leaves, and calculates salary and dues automatically. From Reports you can review any period and download the table and summary in the format you prefer.',
-    'about.privacy_hint': 'All your data is stored locally on your device and never sent to any server. The app works fully offline after the first load.',
+    'about.summary_title': 'At a glance',
+    'about.summary': 'Track shifts, attendance, leave and working hours, then review reports and salary details in one place.',
+    'about.security_title': 'Privacy & Security',
+    'about.security_local_title': 'Your data stays on your device',
+    'about.security_local': 'App records are stored locally on your device. Keep your device protected with a screen lock.',
+    'about.security_backup_title': 'Backups',
+    'about.security_backup': 'Backup files may contain your data. Store them securely and do not share them with others.',
+    'about.security_finance_title': 'Hide financial amounts',
+    'about.security_finance': 'You can hide financial figures in the app whenever needed.',
     'about.made': 'Designed & developed by',
 
     // ====== Sheet: Search ======
