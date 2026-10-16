@@ -657,7 +657,7 @@
     'about.installable': 'Installable',
     'about.storage': 'Data storage',
     'about.storage_val': 'Local (device)',
-    'about.summary_title': 'At a glance',
+    'about.summary_title': 'About the App',
     'about.summary': 'Track shifts, attendance, leave and working hours, then review reports and salary details in one place.',
     'about.security_title': 'Privacy & Security',
     'about.security_local_title': 'Your data stays on your device',
