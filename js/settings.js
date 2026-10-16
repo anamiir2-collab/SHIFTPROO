@@ -1623,7 +1623,30 @@
   // About
   // =========================================================
 
+  function resetAboutAccordions() {
+    ['aboutSummaryToggle', 'aboutSecurityToggle'].forEach((id) => {
+      const button = document.getElementById(id);
+      const panelId = button && button.getAttribute('aria-controls');
+      const panel = panelId && document.getElementById(panelId);
+      if (!button || !panel) return;
+      button.setAttribute('aria-expanded', 'false');
+      panel.setAttribute('aria-hidden', 'true');
+      panel.classList.remove('is-open');
+    });
+  }
+
+  function toggleAboutAccordion(button) {
+    const panelId = button && button.getAttribute('aria-controls');
+    const panel = panelId && document.getElementById(panelId);
+    if (!button || !panel) return;
+    const isOpen = button.getAttribute('aria-expanded') === 'true';
+    button.setAttribute('aria-expanded', String(!isOpen));
+    panel.setAttribute('aria-hidden', String(isOpen));
+    panel.classList.toggle('is-open', !isOpen);
+  }
+
   function openAboutSheet() {
+    resetAboutAccordions();
     $('#aboutOverlay').classList.add('show');
     $('#aboutSheet').classList.add('show');
   }
@@ -1631,6 +1654,7 @@
   function closeAboutSheet() {
     $('#aboutOverlay').classList.remove('show');
     $('#aboutSheet').classList.remove('show');
+    resetAboutAccordions();
   }
 
   // =========================================================
@@ -2083,6 +2107,8 @@
     // About
     bind('#closeAboutBtn', 'click', closeAboutSheet);
     bind('#aboutOverlay', 'click', closeAboutSheet);
+    bind('#aboutSummaryToggle', 'click', (event) => toggleAboutAccordion(event.currentTarget));
+    bind('#aboutSecurityToggle', 'click', (event) => toggleAboutAccordion(event.currentTarget));
 
     // More page
     document
