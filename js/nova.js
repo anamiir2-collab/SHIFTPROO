@@ -6,6 +6,11 @@
   function classifyIntent(s) {
     const q = norm(s);
     if (!q) return 'empty';
+    if (/(افتح|روح|انتقل).*(تقويم|calendar)/.test(q)) return 'open_calendar';
+    if (/(افتح|روح|انتقل).*(راتب|salary)/.test(q)) return 'open_salary';
+    if (/(افتح|روح|انتقل).*(تقرير|تقارير|reports)/.test(q)) return 'open_reports';
+    if (/(افتح|روح|انتقل).*(الرئيسيه|الرئيسية|home|الحضور)/.test(q)) return 'open_dashboard';
+    if (/(افتح|روح|انتقل).*(قانون العمل|مستشارك العمالي)/.test(q)) return 'open_law';
     if (/(تسجيل حضور|سجل حضور|سجلت حضور|احضر الان|check in|clock in)/.test(q)) return 'checkin';
     if (/(تسجيل انصراف|سجل انصراف|انصرف الان|خلصت شغل|check out|clock out)/.test(q)) return 'checkout';
     if (/(رصيد.*اجاز|اجازاتي|رصيد الاجازات|leave balance)/.test(q)) return 'leave_balance';
@@ -37,7 +42,7 @@
       const data = salaryData();
       if (!data) return {ok:false,message:t('nova.error_data')};
       const r = data.result, vars = {start:dateLabel(data.period.start),end:dateLabel(data.period.end)};
-      if (intent === 'hours') return {ok:true,message:t('nova.hours_result',{...vars,hours:num(r.totalHours)})};
+      if (intent === 'hours') { const worked=(r.dailyDetails||[]).reduce((sum,d)=>d.entry&&(d.entry.status==='A'||d.entry.status==='X')?sum+(Number(d.actual)||0):sum,0); return {ok:true,message:t('nova.hours_result',{...vars,hours:num(worked)})}; }
       if (intent === 'salary') return {ok:true,message:t('nova.salary_result',{...vars,net:money(r.netSalary),gross:money(r.grossSalary),deductions:money(r.totalDeductions)})};
       return {ok:true,message:t('nova.absence_result',{count:num(r.counts.B)})};
     }
