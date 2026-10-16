@@ -666,6 +666,7 @@
     'about.security_backup': 'Backup files may contain your data. Store them securely and do not share them with others.',
     'about.security_finance_title': 'Hide financial amounts',
     'about.security_finance': 'You can hide financial figures in the app whenever needed.',
+    'about.security_note': 'The app relies on the screen lock you set on your device. It does not lock the device itself or encrypt backup files.',
     'about.made': 'Designed & developed by',
 
     // ====== Sheet: Search ======
