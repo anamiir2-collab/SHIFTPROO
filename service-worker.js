@@ -1,10 +1,10 @@
-/* ShiftPro Service Worker - v2.5.0
+/* ShiftPro Service Worker - v2.5.1
    Strategy:
    - precache: app shell (HTML, CSS, JS, locales, icons, manifest)
    - runtime: network-first for navigations, cache-first for static assets
    - cleanup: drop old caches on activate
 */
-const SW_VERSION = 'shifpro-v2.5.4-law';
+const SW_VERSION = 'shifpro-v2.5.1';
 const APP_SHELL = [
   './',
   './index.html',
