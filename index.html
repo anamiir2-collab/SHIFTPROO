@@ -13,10 +13,11 @@
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" href="favicon-32.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
-  <link rel="stylesheet" href="css/style.css?v=2.5.3">
-  <link rel="stylesheet" href="css/animations.css?v=2.5.3">
-  <link rel="stylesheet" href="css/ios-style.css?v=2.5.3">
-  <link rel="stylesheet" href="css/law-reader.css?v=2.5.3">
+  <link rel="stylesheet" href="css/style.css?v=2.5.4">
+  <link rel="stylesheet" href="css/animations.css?v=2.5.4">
+  <link rel="stylesheet" href="css/ios-style.css?v=2.5.4">
+  <link rel="stylesheet" href="css/nova.css?v=2.5.4">
+  <link rel="stylesheet" href="css/law-reader.css?v=2.5.4">
   <!-- Arabic-first typography: Cairo (Arabic) + IBM Plex Sans Arabic as fallback.
        We preconnect to Google Fonts only if the network is available; the font
        stack in CSS falls back to system fonts gracefully when offline. -->
@@ -24,9 +25,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
   <!-- i18n: العربية + الإنجليزية (يتحمّل قبل أي موديول آخر) -->
-  <script src="locales/ar.js?v=2.5.3"></script>
-  <script src="locales/en.js?v=2.5.3"></script>
-  <script src="locales/index.js?v=2.5.3"></script>
+  <script src="locales/ar.js?v=2.5.4"></script>
+  <script src="locales/en.js?v=2.5.4"></script>
+  <script src="locales/index.js?v=2.5.4"></script>
 </head>
 <body>
 
@@ -48,7 +49,7 @@
     </div>
     <h1 class="sp-brand" aria-label="SHIFT PRO"><span>SHIFT</span><span>PRO</span></h1>
     <p class="sp-tagline" data-i18n="app.tagline">وقتك محسوب.. وشغلك منظم</p>
-    <p class="sp-credit" data-i18n="app.credit_splash">v2.5.3 • إدارة الورديات والحضور والرواتب</p>
+    <p class="sp-credit" data-i18n="app.credit_splash">v2.5.4 • إدارة الورديات والحضور والرواتب</p>
     <div class="sp-progress" aria-hidden="true"><span></span></div>
   </div>
 </div>
@@ -1021,7 +1022,7 @@
   <h3><span data-i18n="about.title">عن ShiftPro</span></h3>
   <p class="sub" data-i18n="about.sub">إدارة وردياتك وحضورك ومستحقاتك في مكان واحد</p>
   <div class="card compact">
-    <div class="row between mb-2"><span class="muted" data-i18n="about.version">الإصدار</span><strong>2.5.3</strong></div>
+    <div class="row between mb-2"><span class="muted" data-i18n="about.version">الإصدار</span><strong>2.5.4</strong></div>
     <div class="row between mb-2"><span class="muted" data-i18n="about.offline">يعمل بدون إنترنت</span><strong class="success" data-i18n="common.yes">نعم</strong></div>
     <div class="row between mb-2"><span class="muted" data-i18n="about.installable">قابل للتثبيت</span><strong class="success">PWA</strong></div>
     <div class="row between"><span class="muted" data-i18n="about.storage">تخزين البيانات</span><strong data-i18n="about.storage_val">محلي (الجهاز)</strong></div>
@@ -1157,57 +1158,58 @@
 </div>
 
 <!-- ============ SCRIPTS ============ -->
-<script src="js/utils.js?v=2.5.3"></script>
-<script src="js/storage.js?v=2.5.3"></script>
-<script src="js/clock.js?v=2.5.3"></script>
-<script src="js/official-holidays.js?v=2.5.3"></script>
-<script src="js/leaves.js?v=2.5.3"></script>
-<script src="js/shift-templates.js?v=2.5.3"></script>
-<script src="js/undo-redo.js?v=2.5.3"></script>
-<script src="js/smart-notifications.js?v=2.5.3"></script>
-<script src="js/pdf-export.js?v=2.5.3"></script>
-<script src="js/charts.js?v=2.5.3"></script>
-<script src="js/backup.js?v=2.5.3"></script>
-<script src="js/app-lock.js?v=2.5.3"></script>
-<script src="js/storage-hybrid.js?v=2.5.3"></script>
-<script src="js/ux-enhancements.js?v=2.5.3"></script>
-<script src="js/ical-export.js?v=2.5.3"></script>
-<script src="js/calendar.js?v=2.5.3"></script>
-<script src="js/attendance.js?v=2.5.3"></script>
-<script src="js/salary.js?v=2.5.3"></script>
-<script src="js/reports.js?v=2.5.3"></script>
-<script src="js/settings.js?v=2.5.3"></script>
-<script src="js/welcome-messages.js?v=2.5.3"></script>
+<script src="js/utils.js?v=2.5.4"></script>
+<script src="js/storage.js?v=2.5.4"></script>
+<script src="js/clock.js?v=2.5.4"></script>
+<script src="js/official-holidays.js?v=2.5.4"></script>
+<script src="js/leaves.js?v=2.5.4"></script>
+<script src="js/shift-templates.js?v=2.5.4"></script>
+<script src="js/undo-redo.js?v=2.5.4"></script>
+<script src="js/smart-notifications.js?v=2.5.4"></script>
+<script src="js/pdf-export.js?v=2.5.4"></script>
+<script src="js/charts.js?v=2.5.4"></script>
+<script src="js/backup.js?v=2.5.4"></script>
+<script src="js/app-lock.js?v=2.5.4"></script>
+<script src="js/storage-hybrid.js?v=2.5.4"></script>
+<script src="js/ux-enhancements.js?v=2.5.4"></script>
+<script src="js/ical-export.js?v=2.5.4"></script>
+<script src="js/calendar.js?v=2.5.4"></script>
+<script src="js/attendance.js?v=2.5.4"></script>
+<script src="js/salary.js?v=2.5.4"></script>
+<script src="js/reports.js?v=2.5.4"></script>
+<script src="js/settings.js?v=2.5.4"></script>
+<script src="js/welcome-messages.js?v=2.5.4"></script>
 
 <!-- ============ EGYPTIAN LABOR LAW DATASET ============
      Order matters: law-data.js initializes window.__LAW__, then
      book files push into it. Loaded BEFORE js/law-reader.js.
      These data files are required for the law-reader tab and are
      isolated from SHIFTPRO's own storage (SPStorage / IndexedDB). -->
-<script src="js/data/law-data.js?v=2.5.3"></script>
-<script src="js/data/book-1-chapter-1.js?v=2.5.3"></script>
-<script src="js/data/book-1-chapter-2.js?v=2.5.3"></script>
-<script src="js/data/book-2-chapter-1.js?v=2.5.3"></script>
-<script src="js/data/book-2-chapter-2.js?v=2.5.3"></script>
-<script src="js/data/book-2-chapter-3.js?v=2.5.3"></script>
-<script src="js/data/book-3-chapter-1.js?v=2.5.3"></script>
-<script src="js/data/book-3-chapter-2.js?v=2.5.3"></script>
-<script src="js/data/book-3-chapter-3.js?v=2.5.3"></script>
-<script src="js/data/book-4-articles.js?v=2.5.3"></script>
-<script src="js/data/book-4-chapter-1.js?v=2.5.3"></script>
-<script src="js/data/book-4-chapter-2.js?v=2.5.3"></script>
-<script src="js/data/book-4-chapter-3.js?v=2.5.3"></script>
-<script src="js/data/book-4-chapter-4.js?v=2.5.3"></script>
-<script src="js/data/book-4-chapter-5.js?v=2.5.3"></script>
-<script src="js/data/book-5-chapter-1.js?v=2.5.3"></script>
-<script src="js/data/book-5-chapter-2.js?v=2.5.3"></script>
+<script src="js/data/law-data.js?v=2.5.4"></script>
+<script src="js/data/book-1-chapter-1.js?v=2.5.4"></script>
+<script src="js/data/book-1-chapter-2.js?v=2.5.4"></script>
+<script src="js/data/book-2-chapter-1.js?v=2.5.4"></script>
+<script src="js/data/book-2-chapter-2.js?v=2.5.4"></script>
+<script src="js/data/book-2-chapter-3.js?v=2.5.4"></script>
+<script src="js/data/book-3-chapter-1.js?v=2.5.4"></script>
+<script src="js/data/book-3-chapter-2.js?v=2.5.4"></script>
+<script src="js/data/book-3-chapter-3.js?v=2.5.4"></script>
+<script src="js/data/book-4-articles.js?v=2.5.4"></script>
+<script src="js/data/book-4-chapter-1.js?v=2.5.4"></script>
+<script src="js/data/book-4-chapter-2.js?v=2.5.4"></script>
+<script src="js/data/book-4-chapter-3.js?v=2.5.4"></script>
+<script src="js/data/book-4-chapter-4.js?v=2.5.4"></script>
+<script src="js/data/book-4-chapter-5.js?v=2.5.4"></script>
+<script src="js/data/book-5-chapter-1.js?v=2.5.4"></script>
+<script src="js/data/book-5-chapter-2.js?v=2.5.4"></script>
 
 <!-- Law reader module: consumes window.__LAW__ and exposes
      window.SPLaw. Activated only when the user opens the law tab
      via the More page card. Does not interfere with SHIFTPRO
      attendance/salary/calendar/reports/settings. -->
-<script src="js/law-reader.js?v=2.5.3"></script>
+<script src="js/law-reader.js?v=2.5.4"></script>
 
-<script src="js/app.js?v=2.5.3"></script>
+<script src="js/app.js?v=2.5.4"></script>
+<script src="js/nova.js?v=2.5.4"></script>
 </body>
 </html>
