@@ -4949,3 +4949,15 @@ body[dir="ltr"] .section-list .item .chev,
 .about-accordion-panel.is-open>.about-accordion-content{overflow:visible}
 .about-detail-icon{font-size:.72rem;font-weight:800;letter-spacing:.04em;color:var(--accent);flex:0 0 38px}
 .about-privacy-mark{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;padding:.45rem .6rem;border:1px solid var(--line);border-radius:9px;color:var(--accent);font-size:.68rem;font-weight:800;letter-spacing:.08em}
+
+
+/* Expanded privacy and data-security statement inside About > Privacy & Security */
+.about-policy-details{display:grid;gap:1rem;margin:.25rem 0 1rem}
+.about-policy-details h3{margin:.25rem 0 .5rem;font-size:1.05rem;line-height:1.7}
+.about-policy-details h4{margin:.65rem 0 .2rem;font-size:.91rem;line-height:1.7;color:var(--text)}
+.about-policy-details p,.about-policy-details li{font-size:.84rem;line-height:1.9;color:var(--muted)}
+.about-policy-details ul{padding-inline-start:1.35rem;margin:.3rem 0}
+.about-policy-details section{padding:.75rem .85rem;border:1px solid var(--line);border-radius:13px;background:color-mix(in srgb,var(--panel-2) 65%,transparent)}
+.privacy-language{min-width:0}
+html[lang^="ar"] .privacy-language-en{display:none!important}
+html[lang^="en"] .privacy-language-ar{display:none!important}
